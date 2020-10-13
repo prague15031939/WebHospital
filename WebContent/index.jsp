@@ -5,11 +5,24 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <style><%@include file="/WEB-INF/CSS/login-style.css"%></style>
     <title>WebHospital</title>
 </head>
+
 <body>
-<form action="controller" method="post">
-    <input type="submit" name="GAC" value="view main page">
-</form>
+	<form action="login" class="login-form" method="POST">
+      <h1>Login</h1>
+
+      <div class="txtb">
+        <input type="text" name="username" placeholder="username">
+      </div>
+
+      <div class="txtb">
+        <input type="password" name="password" placeholder="password">
+      </div>
+
+      <input type="submit" class="logbtn" value="Sign up">
+    </form>
+
 </body>
 </html>

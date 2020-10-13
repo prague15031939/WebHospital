@@ -9,7 +9,8 @@
 </head>
 <body>
 
-<div class="user-info">${item}</div>
+<h3>another page lol</h3>
+<div class="user-info">${acc}</div>
 
 </body>
 </html>

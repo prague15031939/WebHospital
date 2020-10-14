@@ -8,7 +8,7 @@
 
 body {
 	background-color: #edeef0;
-	background-image: url("login-background.jpg");
+	background-image: url("/WebHospital/image/login-background.jpg");
 	width: 100%;
 	background-position: center;
 	background-repeat: no-repeat;

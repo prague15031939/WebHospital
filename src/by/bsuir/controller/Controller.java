@@ -4,6 +4,8 @@ import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 import java.io.IOException;
 
 import javax.servlet.RequestDispatcher;
@@ -15,6 +17,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import by.bsuir.dao.DAO;
+import by.bsuir.model.Doctor;
+import by.bsuir.model.Patient;
+import by.bsuir.model.Prescription;
 import by.bsuir.model.UserAccount;
 
 @WebServlet("/")
@@ -34,13 +39,22 @@ public class Controller extends HttpServlet {
 		
 		switch (action) {
 		case "/login":
+			this.showLogin(request, response);
+			break;
+		case "/sign-in":
 			this.loginUser(request, response);
 			break;	
 		case "/main":
-			this.showMain(request, response);
+			this.showMainPage(request, response);
 			break;
-		case "/another":
-			this.showAnother(request, response);
+		case "/patients":
+			this.showPatients(request, response);
+			break;
+		case "/doctor-prescribe":
+			this.showCreator(request, response);
+			break;
+		case "/prescribe":
+			this.doPrescription(request, response);
 			break;
 		}
 		
@@ -50,26 +64,59 @@ public class Controller extends HttpServlet {
 		doGet(request, response);
 	}
 	
+	protected void doPrescription(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		Prescription prscr = new Prescription(  
+			request.getParameter("diagnosis"), 
+			request.getParameter("medicines"), 
+			request.getParameterValues("proc-box"),
+			request.getParameterValues("manipulation-box")
+		);
+		
+		int patientID = Integer.parseInt(request.getParameter("id"));
+		Patient patient = dao.GetPatient(patientID);
+		UserAccount doctor = dao.GetUserAccount((String)session.getAttribute("hash"));
+		dao.doPrescription(prscr, doctor.id, patient.id);
+	}
+	
+	protected void showLogin(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		session.removeAttribute("hash");
+		this.getServletContext().getRequestDispatcher("/login.jsp").forward(request, response);
+	}
+	
 	protected void loginUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
 			String hash = getHash(request.getParameter("username") + request.getParameter("password"));
 			session.setAttribute("hash", hash);
 			
-			response.sendRedirect("main");
+			response.sendRedirect("patients");
 		}
 		catch (NoSuchAlgorithmException e) {}
 	}
 	
-	protected void showMain(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		UserAccount acc = dao.GetUserAccount((String)session.getAttribute("hash"));
-		request.setAttribute("item", acc.StringForm());
-		this.getServletContext().getRequestDispatcher("/main.jsp").forward(request, response);
+	protected void showPatients(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		UserAccount accDoctor = dao.GetUserAccount((String)session.getAttribute("hash"));
+		Doctor doctor = dao.GetDoctor(accDoctor.id);
+		request.setAttribute("doctor", doctor);
+		
+		ArrayList<Patient> patients = dao.GetDoctorsPatients(accDoctor.id);
+		request.setAttribute("patientList", patients);
+		this.getServletContext().getRequestDispatcher("/patients.jsp").forward(request, response);
 	}
 	
-	protected void showAnother(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		UserAccount acc = dao.GetUserAccount((String)session.getAttribute("hash"));
-		request.setAttribute("acc", acc.StringForm());
-		this.getServletContext().getRequestDispatcher("/another.jsp").forward(request, response);
+	protected void showCreator(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		int patientID = Integer.parseInt(request.getParameter("id"));
+		Patient patient = dao.GetPatient(patientID);
+		
+		String[][] procedures = {{"first", "second", "third"}, {"fourth", "fifth", "sixth"}, {"seventh", "eighths", "ninth"}};
+		String[][] manipulations = {{"foo", "bar", "nop"}, {"gac", "rze", "pax"}};
+		request.setAttribute("patient", patient);
+		request.setAttribute("procedures", procedures);
+		request.setAttribute("manipulations", manipulations);
+		this.getServletContext().getRequestDispatcher("/doctor-prescribe.jsp").forward(request, response);
+	}
+	
+	protected void showMainPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		this.getServletContext().getRequestDispatcher("/index.jsp").forward(request, response);
 	}
 	
 	protected String getHash(String text) throws NoSuchAlgorithmException {

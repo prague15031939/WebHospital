@@ -1,0 +1,128 @@
+body {
+	background-color: #edeef0;
+  font-family: gill sans mt;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+* {
+	margin: 0;
+	padding: 0;
+}
+
+.wrapper {
+  	display: flex;
+  	flex-direction: row;
+  	justify-content: space-between;	
+}
+
+.main-block {
+	margin: 30px auto 0px 0px;
+	background-color: #F8F8FF;
+	width: 600px;
+	border: 1px solid #DCDCDC;
+	border-radius: 5px;
+	text-align: left;
+}
+
+.patient-info {
+	margin-right: 20px;
+	height: 575px;
+	width: 350px;
+	background-color: #F8F8FF;
+	border: 1px solid #DCDCDC;
+	border-radius: 5px;
+	text-align: left;
+}
+
+.secondary-block {
+	margin: 30px 20px 0px 230px;
+	width: 370px;
+	border-right: 1px solid #DCDCDC;
+}
+
+.prescribe-form {
+  width: 90%;
+  margin: 30px auto 30px auto;
+}
+
+.prescribe-form h2 {
+  margin-bottom: 30px;
+}
+
+.txtb, .txtb-large {
+  text-align: left;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  border: 1px solid #DCDCDC;
+  border-radius: 5px;
+  position: relative;
+}
+
+.proc-region, .oper-region {
+	text-align: left;
+  	margin-top: 20px;
+  	margin-bottom: 20px;
+	color: grey;
+	padding: 2px 5px;
+	font-size: 15px;
+}
+
+#procedures, #operations {
+	margin-top: 10px;	
+}
+
+.proc-checkbox {
+	height: 20px;
+	width: 180px;
+}
+
+.txtb input {
+  padding: 0 5px;
+  width: 400px;
+  height: 30px;
+  font-size: 15px;
+  color: black;
+  border: none;
+  width: 100%;
+  outline: none;
+  background: none;
+  font-size: 14px;
+  font-family: Trebuchet MS;
+}
+
+.txtb-large textarea {
+  padding: 2px 5px;
+  font-size: 15px;
+  color: black;
+  border: none;
+  width: 100%;
+  outline: none;
+  background: none;
+	overflow: hidden;
+	resize: none;
+  font-size: 14px;
+  font-family: Trebuchet MS;
+}
+
+.createbtn {
+  margin-right: auto;
+  margin-left: auto;
+  border-radius: 5px;
+  display: block;
+  width: 40%;
+  height: 40px;
+  border: none;
+	font-size: 16px;
+	font-family: gill sans mt;
+  background-color: #0f3057;
+  background-size: 200%;
+  color: white;
+  outline: none;
+  cursor: pointer;
+}
+
+.createbtn:hover{
+	background: linear-gradient(120deg,#008891,#00587a,#0f3057);
+}

@@ -1,0 +1,55 @@
+body {
+	background-color: #edeef0;
+  font-family: gill sans mt;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+* {
+	margin: 0;
+	padding: 0;
+}
+
+.wrapper {
+  	display: flex;
+  	flex-direction: row;
+  	justify-content: space-between;	
+}
+
+.main-block {
+	margin: 30px auto 0px 0px;
+	width: 600px;
+	text-align: left;
+}
+
+.doctor-info {
+	margin: 10px 20px 10px 0px;
+	height: 575px;
+	width: 350px;
+	background-color: #F8F8FF;
+	border: 1px solid #DCDCDC;
+	border-radius: 5px;
+	text-align: left;
+}
+
+.secondary-block {
+	margin: 30px 20px 0px 230px;
+	width: 370px;
+	border-right: 1px solid #DCDCDC;
+}
+
+.patient-list {
+	width: 90%;
+  margin-left: 0px;
+  margin-right: auto;
+}
+
+.patient {
+	margin-top: 10px;
+	margin-bottom: 10px;
+	height: 100px;
+	background-color: #F8F8FF;
+	border: 1px solid #DCDCDC;
+	border-radius: 5px;
+}

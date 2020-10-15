@@ -1,0 +1,67 @@
+* {
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+  font-family: gill sans mt;
+  box-sizing: border-box;
+}
+
+.header {
+	background-color: #0f3057;
+	font-family: gill sans mt;
+	font-size: 18px;
+	height: 50px;
+	display: grid;
+	grid-template-columns: repeat(12,1fr);
+}
+
+.hospital-href {
+	text-decoration: none;
+	color: white;
+}
+
+.site-logo {
+	font-size: 24px;
+	grid-column: 3;
+	margin-top: auto;
+    margin-bottom: auto;
+	text-align: center;
+}
+
+.navigation {
+	padding-top: 17px;
+	margin-left: 20px;
+	grid-column-start: 4;
+	grid-column-end: 8;
+}
+
+.navigation-link {
+	text-align: center;
+	text-decoration: none;
+	padding-right: 20px;
+	color: white;
+}
+
+.login-href, .sign-caption {
+	margin-top: auto;
+  margin-bottom: auto;
+  margin-left: auto;
+  margin-right: auto;
+	grid-column: 10;
+}
+
+.account-icon {
+	width: 35px;
+	height: 35px;
+	border-radius: 50%;
+	background-size: cover;
+}
+
+.sign-caption {
+	text-decoration: none;
+	color: white;
+}
+
+.navigation-link:hover {
+	color: #e94560;
+}

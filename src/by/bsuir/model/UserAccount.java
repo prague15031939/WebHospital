@@ -17,8 +17,4 @@ public class UserAccount {
 	public String email;
 	public String image;
 	public UserStatus status;
-	
-	public String StringForm() {
-		return String.valueOf(id) + ": " + username + ": " + hash + "\n";
-	}
 }

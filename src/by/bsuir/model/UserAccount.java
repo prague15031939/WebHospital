@@ -1,9 +1,5 @@
 package by.bsuir.model;
 
-enum UserStatus {
-	CHIEF, DOCTOR, NURSE, PATIENT
-}
-
 public class UserAccount {
 	public UserAccount(int id, String username, String hash) {
 		this.id = id;

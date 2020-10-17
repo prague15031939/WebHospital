@@ -18,12 +18,13 @@
 	<div class="wrapper">
 		<div class="secondary-block">
 			<div class="doctor-info">
-				<div class="acc-info">
-					<c:out value="${doctor.id}" />
-					<c:out value="${doctor.name}" />
-					<c:out value="${doctor.birthDate}" />
-					<c:out value="${doctor.specialization}" />
+				<div class="doctor-image">
+					<img src="<c:out value="${doctorImage}" />">
 				</div>
+				<div class="doctor-info-item"><c:out value="${doctor.name}" /></div>
+				<div class="doctor-info-item"><c:out value="${doctor.birthDate}" /></div>
+				<div class="doctor-info-item"><c:out value="${doctorSpecialization}" /></div>
+				<div class="doctor-info-item"><c:out value="${doctorEmail}" /></div>
 			</div>
 		</div>
 		
@@ -32,12 +33,14 @@
 			
 				<c:forEach var="human" items="${patientList}">
 					<div class="patient">
-						<c:out value="${human.id}" />
-						<c:out value="${human.name}" />
-						<c:out value="${human.birthDate}" />
 						<div>
-							<a href="doctor-prescribe?id=<c:out value='${human.id}' />">prescribe</a>
-							<a href="#">discharge</a>
+							<div class="patient-info-item"><c:out value="${human.name}" /></div>
+							<div class="patient-info-item"><c:out value="${human.birthDate}" /></div>
+							<div class="patient-info-livingplace"><c:out value="${human.livingPlace}" /></div>
+						</div>
+						<div class="actions">
+							<div class="action-button1"><a href="doctor-prescribe?id=<c:out value='${human.id}' />">prescribe</a></div>
+							<div class="action-button2"><a href="#">discharge</a></div>
 						</div>
 					</div>
 				</c:forEach>

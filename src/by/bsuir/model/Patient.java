@@ -27,8 +27,25 @@ public class Patient {
 		return name;
 	}
 	
+	public String getPassportNumber() {
+		return passportNumber;
+	}
+	
 	public Date getBirthDate() {
 		return birthDate;
 	}
+	
+	public String getLivingPlace() {
+		return livingPlace;
+	}
+	
+	public String getPastIllnesses() {
+		return pastIllnesses;
+	}
+	
+	public PatientStatus getStatus() {
+		return status;
+	}
+	
 
 }

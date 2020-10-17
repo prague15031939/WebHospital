@@ -19,16 +19,16 @@ body {
 
 .main-block {
 	margin: 30px auto 0px 0px;
-	background-color: #F8F8FF;
+	min-height: 575px;
 	width: 600px;
-	border: 1px solid #DCDCDC;
-	border-radius: 5px;
 	text-align: left;
+	padding-left: 20px;
+	border-left: 1px solid #DCDCDC;
 }
 
 .patient-info {
-	margin-right: 20px;
-	height: 575px;
+	margin: 10px 20px 10px 0px;
+	padding-bottom: 20px;
 	width: 350px;
 	background-color: #F8F8FF;
 	border: 1px solid #DCDCDC;
@@ -36,10 +36,47 @@ body {
 	text-align: left;
 }
 
+.patient-info-item {
+	text-align: center;
+	margin: 10px 30px 10px 30px;
+}
+
+.patient-info-pastillnesses {
+	border-top: 1px solid #DCDCDC;
+	padding-top: 10px;
+	text-align: center;
+	margin: 10px 30px 10px 30px;
+}
+
+.illnesses-text {
+	margin-top: 5px;
+	font-size: 12px;
+	font-family: sans-serif;
+}
+
+.patient-image {
+	text-align: center;
+}
+
+.patient-image img {
+	margin: 30px auto;
+	border-radius: 5px;
+	max-width: 200px;
+	max-height: 200px;
+	background-size: cover;
+}
+
 .secondary-block {
-	margin: 30px 20px 0px 230px;
+	margin: 30px 0px 0px 230px;
 	width: 370px;
-	border-right: 1px solid #DCDCDC;
+}
+
+.prescription {
+	margin-top: 10px;
+	margin-bottom: 10px;
+	border: 1px solid #DCDCDC;
+	background-color: #F8F8FF;
+	border-radius: 5px;	
 }
 
 .prescribe-form {

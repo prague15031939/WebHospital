@@ -1,5 +1,7 @@
 package by.bsuir.model;
 
+import java.util.Map;
+
 public enum DoctorSpecialization {
-	THERAPIST, OCULIST, LOR, CARDIOLOGIST, SURGEON
+	THERAPIST, OPHTHALMOLOGIST, OTOLARYNGOLOGIST, CARDIOLOGIST, SURGEON
 }

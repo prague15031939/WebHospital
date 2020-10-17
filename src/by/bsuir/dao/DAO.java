@@ -12,8 +12,10 @@ import java.util.List;
 import by.bsuir.model.Doctor;
 import by.bsuir.model.DoctorSpecialization;
 import by.bsuir.model.Patient;
+import by.bsuir.model.PatientStatus;
 import by.bsuir.model.Prescription;
 import by.bsuir.model.UserAccount;
+import by.bsuir.model.UserStatus;
 
 public class DAO {
 	private String jdbcURL = "jdbc:mysql://localhost:3306/hospital?serverTimezone=Europe/Minsk&useSSL=false";
@@ -34,42 +36,44 @@ public class DAO {
 		return connection;
 	}
 	
-	public UserAccount GetUserAccount(String requestedHash) {		
+	protected UserAccount FillUserAccount(PreparedStatement preparedStatement) {
 		UserAccount acc = null;
 		try {
-			Connection connection = getConnection();
-			PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `user_account` WHERE `user_hash` = ?");
-			preparedStatement.setString(1, requestedHash);
 			ResultSet rs = preparedStatement.executeQuery();
 			while (rs.next()) {
 				int id = Integer.parseInt(rs.getString("user_id"));
 				String name = rs.getString("user_name");
 				String hash = rs.getString("user_hash");
 				acc = new UserAccount(id, name, hash);
-			}
-		} 
+				acc.email = rs.getString("email");
+				acc.image = rs.getString("image");
+				acc.status = UserStatus.valueOf(rs.getString("status"));
+			} 
+		}
 		catch (Exception e) {}
-		
 		return acc;
 	}
 	
+	public UserAccount GetUserAccount(String requestedHash) {		
+		try {
+			Connection connection = getConnection();
+			PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `user_account` WHERE `user_hash` = ?");
+			preparedStatement.setString(1, requestedHash);
+			return FillUserAccount(preparedStatement);
+		} 
+		catch (Exception e) {}
+		return null;
+	}
+	
 	public UserAccount GetUserAccount(int id) {		
-		UserAccount acc = null;
 		try {
 			Connection connection = getConnection();
 			PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `user_account` WHERE `user_id` = ?");
 			preparedStatement.setInt(1, id);
-			ResultSet rs = preparedStatement.executeQuery();
-			while (rs.next()) {
-				id = Integer.parseInt(rs.getString("user_id"));
-				String name = rs.getString("user_name");
-				String hash = rs.getString("user_hash");
-				acc = new UserAccount(id, name, hash);
-			}
+			return FillUserAccount(preparedStatement);
 		} 
 		catch (Exception e) {}
-		
-		return acc;
+		return null;
 	}
 	
 	public ArrayList<Patient> GetDoctorsPatients(int doctorID) {
@@ -102,6 +106,9 @@ public class DAO {
 				Date birthDate = rs.getDate("birth_date");
 				String livingPlace = rs.getString("living_place");
 				pat = new Patient(id, name, birthDate, livingPlace);
+				pat.passportNumber = rs.getString("passport");
+				pat.pastIllnesses = rs.getString("past_ill");
+				pat.status = PatientStatus.valueOf(rs.getString("status"));
 			}
 		} 
 		catch (Exception e) {}

@@ -150,4 +150,29 @@ public class DAO {
 		} 
 		catch (Exception e) {}
 	}
+	
+	public ArrayList<Prescription> GetPatientsPrescriptions(int patientID) {
+		ArrayList<Prescription> list = new ArrayList<>(); 
+		try {
+			Connection connection = getConnection();
+			PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `prescription` WHERE `patient_id` = ?");
+			preparedStatement.setInt(1, patientID);
+			ResultSet rs = preparedStatement.executeQuery();
+			while (rs.next()) {
+				
+				String diagnosis = rs.getString("diagnosis");
+				String medicines = rs.getString("medicines");
+				String[] procedures = rs.getString("procedures").split("`");
+				String[] manipulations = rs.getString("manipulations").split("`");
+				Prescription item = new Prescription(diagnosis, medicines, procedures, manipulations);
+				item.patientID = patientID;
+				item.doctorID = Integer.parseInt(rs.getString("doctor_id"));
+				
+				list.add(item);
+			}
+		} 
+		catch (Exception e) {}
+		
+		return list;
+	}
 }

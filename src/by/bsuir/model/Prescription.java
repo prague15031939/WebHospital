@@ -18,4 +18,8 @@ public class Prescription {
 	public String[] procedures;
 	public String medicines;
 	public String[] manipulations;
+	
+	public String getDiagnosis() {
+		return diagnosis;
+	}
 }

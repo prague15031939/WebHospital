@@ -21,6 +21,7 @@ import by.bsuir.model.Doctor;
 import by.bsuir.model.Patient;
 import by.bsuir.model.Prescription;
 import by.bsuir.model.UserAccount;
+import by.bsuir.model.UserStatus;
 
 @WebServlet("/")
 public class Controller extends HttpServlet {
@@ -34,7 +35,7 @@ public class Controller extends HttpServlet {
     }
     
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		session = request.getSession(true);
+		session = request.getSession(true); 
 		String action = request.getServletPath();
 		
 		switch (action) {
@@ -56,6 +57,9 @@ public class Controller extends HttpServlet {
 		case "/prescribe":
 			this.doPrescription(request, response);
 			break;
+		case "/prescriptions":
+			this.showPrescriptions(request, response);
+			break;
 		}
 		
 	}
@@ -70,6 +74,7 @@ public class Controller extends HttpServlet {
 	}
 	
 	protected void showMainPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.setAttribute("status", session.getAttribute("status"));
 		this.getServletContext().getRequestDispatcher("/index.jsp").forward(request, response);
 	}
 	
@@ -77,6 +82,7 @@ public class Controller extends HttpServlet {
 		UserAccount accDoctor = dao.GetUserAccount((String)session.getAttribute("hash"));
 		Doctor doctor = dao.GetDoctor(accDoctor.id);
 		
+		request.setAttribute("status", session.getAttribute("status"));
 		request.setAttribute("doctorSpecialization", doctor.specialization.toString().toLowerCase().replaceAll("_", " "));
 		request.setAttribute("doctorImage", accDoctor.image);
 		request.setAttribute("doctorEmail", accDoctor.email);
@@ -92,6 +98,7 @@ public class Controller extends HttpServlet {
 		Patient patient = dao.GetPatient(patientID);
 		UserAccount accPatient = dao.GetUserAccount(patientID);
 		
+		request.setAttribute("status", session.getAttribute("status"));
 		request.setAttribute("patient", patient);
 		request.setAttribute("patientImage", accPatient.image);
 		request.setAttribute("patientEmail", accPatient.email);
@@ -104,12 +111,39 @@ public class Controller extends HttpServlet {
 		this.getServletContext().getRequestDispatcher("/doctor-prescribe.jsp").forward(request, response);
 	}
 	
+	protected void showPrescriptions(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.setAttribute("status", session.getAttribute("status"));
+		if (request.getParameter("id") == null) {
+			this.getServletContext().getRequestDispatcher("/index.jsp").forward(request, response);
+			return;
+		}
+		
+	
+		int patientID = Integer.parseInt(request.getParameter("id"));
+		UserAccount accPatient = dao.GetUserAccount(patientID);
+		request.setAttribute("patientImage", accPatient.image);
+		request.setAttribute("patientEmail", accPatient.email);
+		
+		Patient patient = dao.GetPatient(patientID);
+		request.setAttribute("patient", patient);
+		
+		ArrayList<Prescription> prescriptions = dao.GetPatientsPrescriptions(patientID);
+		request.setAttribute("prescriptionsList", prescriptions);
+		
+		this.getServletContext().getRequestDispatcher("/prescriptions.jsp").forward(request, response);
+	}
+	
 	protected void loginUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
 			String hash = getHash(request.getParameter("username") + request.getParameter("password"));
 			session.setAttribute("hash", hash);
+			UserStatus status = dao.GetUserAccount(hash).status;
+			session.setAttribute("status", status.toString());
 			
-			response.sendRedirect("patients");
+			if (status == UserStatus.DOCTOR)
+				response.sendRedirect("patients");
+			else if (status == UserStatus.PATIENT)
+				response.sendRedirect("prescriptions");
 		}
 		catch (NoSuchAlgorithmException e) {}
 	}
@@ -126,6 +160,8 @@ public class Controller extends HttpServlet {
 		Patient patient = dao.GetPatient(patientID);
 		UserAccount doctor = dao.GetUserAccount((String)session.getAttribute("hash"));
 		dao.doPrescription(prscr, doctor.id, patient.id);
+		
+		response.sendRedirect("patients");
 	}
 	
 	protected String getHash(String text) throws NoSuchAlgorithmException {

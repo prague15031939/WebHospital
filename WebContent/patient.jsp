@@ -7,7 +7,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <style><%@include file="/WEB-INF/CSS/header-style.css"%></style>
-    <style><%@include file="/WEB-INF/CSS/prescriptions-style.css"%></style>
+    <style><%@include file="/WEB-INF/CSS/patient-style.css"%></style>
     <style><%@include file="/WEB-INF/CSS/footer-style.css"%></style>
     <title>WebHospital</title>
 </head>
@@ -39,12 +39,14 @@
 					<div class="prescription">
 						<div>
 							<div class="prescription-info-item"><c:out value="${pres.diagnosis}" /></div>
-							<div class="prescription-info-item"><c:out value="second" /></div>
-							<div class="prescription-sho-item"><c:out value="third" /></div>
+							<div class="prescription-info-item"><c:out value="${pres.getQuickDoctorInfo()}" /></div>
+							<div class="prescription-timestamp-item"><c:out value="${pres.getStringTime()}" /></div>
 						</div>
 						<div class="actions">
-							<div class="action-button1"><a href="#">view</a></div>
-							<div class="action-button2"><a href="#">delete</a></div>
+							<div class="action-button1"><a href="prescription?id=<c:out value='${pres.prescriptionID}' />">view</a></div>
+							<c:if test="${status eq 'DOCTOR' or status eq 'NURSE'}">
+								<div class="action-button2"><a href="#">execute</a></div>
+							</c:if>
 						</div>
 					</div>
 				</c:forEach>

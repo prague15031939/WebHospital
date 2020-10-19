@@ -7,7 +7,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <style><%@include file="/WEB-INF/CSS/header-style.css"%></style>
-    <style><%@include file="/WEB-INF/CSS/patients-style.css"%></style>
+    <style><%@include file="/WEB-INF/CSS/doctor-style.css"%></style>
     <style><%@include file="/WEB-INF/CSS/footer-style.css"%></style>
     <title>WebHospital</title>
 </head>
@@ -34,7 +34,9 @@
 				<c:forEach var="human" items="${patientList}">
 					<div class="patient">
 						<div>
-							<div class="patient-info-item"><c:out value="${human.name}" /></div>
+							<div class="patient-info-item">
+								<a id="patient-link" href="patient?id=<c:out value='${human.id}' />"><c:out value="${human.name}" /></a>
+							</div>
 							<div class="patient-info-item"><c:out value="${human.birthDate}" /></div>
 							<div class="patient-info-livingplace"><c:out value="${human.livingPlace}" /></div>
 						</div>

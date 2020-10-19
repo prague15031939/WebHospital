@@ -84,6 +84,15 @@ body {
 	margin: 10px 0px 0px 10px;
 }
 
+#patient-link {
+	color: black; 
+	text-decoration: none;
+}
+
+#patient-link:hover {
+	color: #e94560;
+}
+
 .patient-info-livingplace {
 	width: 300px;
 	text-align: left;

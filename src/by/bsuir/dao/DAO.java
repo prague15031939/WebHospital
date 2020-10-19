@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -136,19 +137,27 @@ public class DAO {
 		return doc;
 	}
 	
-	public void doPrescription(Prescription prescription, int doctorID, int patientID) {
+	public int doPrescription(Prescription prescription, int doctorID, int patientID) {
 		try {
 			Connection connection = getConnection();
-			PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO prescription (patient_id, doctor_id, diagnosis, procedures, medicines, manipulations) VALUES (?, ?, ?, ?, ?, ?)");
+			PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO prescription (patient_id, doctor_id, timestamp, diagnosis, procedures, medicines, manipulations) VALUES (?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 			preparedStatement.setInt(1, patientID);
 			preparedStatement.setInt(2, doctorID);
-			preparedStatement.setString(3, prescription.diagnosis);
-			preparedStatement.setString(4, String.join("`", prescription.procedures));
-			preparedStatement.setString(5, prescription.medicines);
-			preparedStatement.setString(6, String.join("`", prescription.manipulations));
+			preparedStatement.setObject(3, new java.sql.Timestamp(prescription.timestamp.getTime())); 
+			preparedStatement.setString(4, prescription.diagnosis);
+			preparedStatement.setString(5, String.join("`", prescription.procedures));
+			preparedStatement.setString(6, String.join(";", prescription.medicines));
+			preparedStatement.setString(7, String.join("`", prescription.manipulations));
 			preparedStatement.executeUpdate();
+			
+			ResultSet rs = preparedStatement.getGeneratedKeys();
+			if (rs.next()) {
+			    return rs.getInt(1);
+			} 
 		} 
 		catch (Exception e) {}
+		
+		return -1;
 	}
 	
 	public ArrayList<Prescription> GetPatientsPrescriptions(int patientID) {
@@ -158,21 +167,39 @@ public class DAO {
 			PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `prescription` WHERE `patient_id` = ?");
 			preparedStatement.setInt(1, patientID);
 			ResultSet rs = preparedStatement.executeQuery();
-			while (rs.next()) {
-				
-				String diagnosis = rs.getString("diagnosis");
-				String medicines = rs.getString("medicines");
-				String[] procedures = rs.getString("procedures").split("`");
-				String[] manipulations = rs.getString("manipulations").split("`");
-				Prescription item = new Prescription(diagnosis, medicines, procedures, manipulations);
-				item.patientID = patientID;
-				item.doctorID = Integer.parseInt(rs.getString("doctor_id"));
-				
-				list.add(item);
+			while (rs.next()) {	
+				int prescriptionID = Integer.parseInt(rs.getString("id"));
+				list.add(GetPrescription(prescriptionID));
 			}
 		} 
 		catch (Exception e) {}
 		
 		return list;
+	}
+	
+	public Prescription GetPrescription(int prescriptionID) {
+		try {
+			Connection connection = getConnection();
+			PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `prescription` WHERE `id` = ?");
+			preparedStatement.setInt(1, prescriptionID);
+			ResultSet rs = preparedStatement.executeQuery();
+			while (rs.next()) {
+				
+				String diagnosis = rs.getString("diagnosis");
+				String[] medicines = rs.getString("medicines").split(";");
+				String[] procedures = rs.getString("procedures").split("`");
+				String[] manipulations = rs.getString("manipulations").split("`");
+				Prescription item = new Prescription(diagnosis, medicines, procedures, manipulations);
+				item.timestamp = rs.getTimestamp("timestamp");
+				item.prescriptionID = Integer.parseInt(rs.getString("id"));
+				item.patientID = Integer.parseInt(rs.getString("patient_id"));
+				item.doctorID = Integer.parseInt(rs.getString("doctor_id"));
+				
+				return item;
+			}
+		} 
+		catch (Exception e) {}
+		
+		return null;
 	}
 }

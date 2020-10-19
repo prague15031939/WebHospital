@@ -90,16 +90,13 @@ body {
   	justify-content: space-between;	
 }
 
-.prescription-info-item {
+.prescription-info-item, .prescription-timestamp-item {
 	width: 300px;
 	text-align: left;
 	margin: 10px 0px 0px 10px;
 }
 
-.prescription-sho-item {
-	width: 300px;
-	text-align: left;
-	margin: 10px 0px 0px 10px;
+.prescription-timestamp-item {
 	font-size: 12px;
 	font-family: sans-serif;
 }

@@ -1,0 +1,68 @@
+body {
+	background-color: #edeef0;
+  font-family: gill sans mt;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+* {
+	margin: 0;
+	padding: 0;
+}
+
+.wrapper {
+	min-height: 610px;
+}
+
+.main-block {
+	margin: 30px auto 10px auto;
+	width: 600px;
+	text-align: left;
+	border: 1px solid #DCDCDC;
+	background-color: #F8F8FF;
+	border-radius: 5px;	
+}
+
+.prescription {
+  width: 90%;
+  margin: 30px auto 30px auto;
+}
+
+.txtb-large {
+  text-align: left;
+  width: 100%;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.txtb-small {
+  text-align: left;
+  width: 100%;
+  margin-top: 5px;
+  margin-bottom: 20px;
+}
+
+.proc-region, .oper-region {
+	text-align: left;
+  	margin-top: 20px;
+  	margin-bottom: 20px;
+	font-size: 15px;
+}
+
+.label {
+	text-decoration: underline;
+	color: grey;
+	font-size: 12px;
+	font-family: sans-serif;
+}
+
+.procedure-item, .operation-item, .diagnosis, .medicine-item {
+	padding: 2px 10px;
+}
+
+.doctor-info, .patient-info, .timestamp {
+	color: grey;
+	font-size: 12px;
+	font-family: sans-serif;
+}

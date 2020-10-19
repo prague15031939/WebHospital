@@ -31,4 +31,8 @@ public class Doctor {
 	public DoctorSpecialization getSpecialization() {
 		return specialization;
 	}
+	
+	public String getQuickInfo() {
+		return name + " " + specialization.toString().toLowerCase().replaceAll("_", " ");
+	}
 }

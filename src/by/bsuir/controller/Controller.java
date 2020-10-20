@@ -114,9 +114,9 @@ public class Controller extends HttpServlet {
 		request.setAttribute("patientImage", accPatient.image);
 		request.setAttribute("patientEmail", accPatient.email);
 		
-		String[][] procedures = {{"first", "second", "third"}, {"fourth", "fifth", "sixth"}, {"seventh", "eighths", "ninth"}};
-		String[][] manipulations = {{"foo", "bar", "nop"}, {"gac", "rze", "pax"}};
+		ArrayList<String[]> procedures = dao.GetProcedures(doctor.specialization);
 		request.setAttribute("procedures", procedures);
+		ArrayList<String[]> manipulations = dao.GetManipulations(doctor.specialization);
 		request.setAttribute("manipulations", manipulations);
 		
 		this.getServletContext().getRequestDispatcher("/doctor-prescribe.jsp").forward(request, response);

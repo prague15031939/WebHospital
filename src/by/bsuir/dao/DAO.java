@@ -202,4 +202,42 @@ public class DAO {
 		
 		return null;
 	}
+	
+	public ArrayList<String[]> GetManipulations(DoctorSpecialization spec) {
+		try {
+			Connection connection = getConnection();
+			PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `manipulations` WHERE `specialization` = ?");
+			preparedStatement.setString(1, String.valueOf(spec));
+			ResultSet rs = preparedStatement.executeQuery();
+			while (rs.next()) {
+				ArrayList<String[]> manipulations = new ArrayList<String[]>();
+				for (String item : rs.getString("manipulations_string").split("~"))
+					manipulations.add(item.split("`"));
+				
+				return manipulations;
+			}
+		} 
+		catch (Exception e) {}
+		
+		return null;
+	}
+	
+	public ArrayList<String[]> GetProcedures(DoctorSpecialization spec) {
+		try {
+			Connection connection = getConnection();
+			PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `procedures` WHERE `specialization` = ?");
+			preparedStatement.setString(1, String.valueOf(spec));
+			ResultSet rs = preparedStatement.executeQuery();
+			while (rs.next()) {
+				ArrayList<String[]> procedures = new ArrayList<String[]>();
+				for (String item : rs.getString("procedures_string").split("~"))
+					procedures.add(item.split("`"));
+				
+				return procedures;
+			}
+		} 
+		catch (Exception e) {}
+		
+		return null;
+	}
 }

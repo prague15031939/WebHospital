@@ -29,6 +29,10 @@ import by.bsuir.model.UserStatus;
 public class Controller extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
+	enum OpenPrescriptionMode {
+		VIEW, EXECUTE
+	}
+	
 	HttpSession session;
 	private DAO dao;
 
@@ -63,7 +67,13 @@ public class Controller extends HttpServlet {
 			this.showPatient(request, response);
 			break;
 		case "/prescription":
-			this.showPrescription(request, response);
+			this.showPrescription(request, response, OpenPrescriptionMode.VIEW);
+			break;
+		case "/execute-prescription":
+			this.showPrescription(request, response, OpenPrescriptionMode.EXECUTE);
+			break;
+		case "/execute":
+			this.doExecution(request, response);
 			break;
 		}
 		
@@ -144,7 +154,7 @@ public class Controller extends HttpServlet {
 		this.getServletContext().getRequestDispatcher("/patient.jsp").forward(request, response);
 	}
 	
-	protected void showPrescription(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void showPrescription(HttpServletRequest request, HttpServletResponse response, OpenPrescriptionMode mode) throws ServletException, IOException {
 		int prescriptionID = Integer.parseInt(request.getParameter("id"));
 		
 		request.setAttribute("accountID", dao.GetUserAccount((String)session.getAttribute("hash")).id);
@@ -167,7 +177,10 @@ public class Controller extends HttpServlet {
 		request.setAttribute("procedures", item.procedures);
 		request.setAttribute("manipulations", item.manipulations);
 		
-		this.getServletContext().getRequestDispatcher("/prescription.jsp").forward(request, response);
+		if (mode == OpenPrescriptionMode.VIEW)
+			this.getServletContext().getRequestDispatcher("/prescription.jsp").forward(request, response);
+		else if (mode == OpenPrescriptionMode.EXECUTE)
+			this.getServletContext().getRequestDispatcher("/execute-prescription.jsp").forward(request, response);
 	}
 	
 	protected void loginUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -201,6 +214,39 @@ public class Controller extends HttpServlet {
 		
 		if (prescriptionID != -1)
 			response.sendRedirect("prescription?id=" + String.valueOf(prescriptionID));
+	}
+	
+	protected void doExecution(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		int prescriptionID = Integer.parseInt(request.getParameter("id"));
+		String[] medicines = request.getParameterValues("medicine-box");
+		String[] procedures = request.getParameterValues("proc-box");
+		String[] manipulations = request.getParameterValues("manipulation-box");
+		
+		String timestamp = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date());		
+		Doctor doctor = dao.GetDoctor(dao.GetUserAccount((String)session.getAttribute("hash")).id);
+		Prescription prescription = dao.GetPrescription(prescriptionID);
+
+		if (procedures != null) prescription.procedures = modifyPrescriptionElement(procedures, prescription.procedures, doctor, timestamp);
+		if (medicines != null) prescription.medicines = modifyPrescriptionElement(medicines, prescription.medicines, doctor, timestamp);
+		if (manipulations != null) prescription.manipulations = modifyPrescriptionElement(manipulations, prescription.manipulations, doctor, timestamp);
+
+		dao.doExecution(prescription);
+		
+		if (prescriptionID != -1)
+			response.sendRedirect("prescription?id=" + String.valueOf(prescriptionID));
+	}
+	
+	protected String[] modifyPrescriptionElement(String[] source, String[] target, Doctor doctor, String timestamp) {
+		for (int i = 0; i < source.length; i++) {
+			for (int j = 0; j < target.length; j++) {
+				if (!target[j].trim().startsWith("@") && target[j].equals(source[i])) {
+					target[j] = String.format("@%s!?%s  %s", source[i], doctor.name, timestamp);
+					break;
+				}
+			}
+		}
+		
+		return target;
 	}
 	
 	protected String getHash(String text) throws NoSuchAlgorithmException {

@@ -45,7 +45,7 @@
 						<div class="actions">
 							<div class="action-button1"><a href="prescription?id=<c:out value='${pres.prescriptionID}' />">view</a></div>
 							<c:if test="${status eq 'DOCTOR' or status eq 'NURSE'}">
-								<div class="action-button2"><a href="#">execute</a></div>
+								<div class="action-button2"><a href="execute-prescription?id=<c:out value='${pres.prescriptionID}' />">execute</a></div>
 							</c:if>
 						</div>
 					</div>

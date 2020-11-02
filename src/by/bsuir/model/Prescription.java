@@ -15,6 +15,10 @@ public class Prescription {
 		this.manipulations = manipulations;
 	}
 	
+	public Prescription() {
+		
+	}
+	
 	public int prescriptionID;
 	public int patientID;
 	public int doctorID;
@@ -33,7 +37,7 @@ public class Prescription {
 	}
 	
 	public String getStringTime() {
-		return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
+		return new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(timestamp);
 	}
 	
 	public String getQuickDoctorInfo() {

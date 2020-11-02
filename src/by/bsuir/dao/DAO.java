@@ -160,6 +160,19 @@ public class DAO {
 		return -1;
 	}
 	
+	public void doExecution(Prescription prescription) {
+		try {
+			Connection connection = getConnection();
+			PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `prescription` SET `procedures` = ?, `medicines` = ?, `manipulations` = ? WHERE `id` = ?");
+			preparedStatement.setString(1, String.join("`", prescription.procedures));
+			preparedStatement.setString(2, String.join(";", prescription.medicines));
+			preparedStatement.setString(3, String.join("`", prescription.manipulations));
+			preparedStatement.setInt(4, prescription.prescriptionID);
+			preparedStatement.executeUpdate();
+		} 
+		catch (Exception e) {}
+	}
+	
 	public ArrayList<Prescription> GetPatientsPrescriptions(int patientID) {
 		ArrayList<Prescription> list = new ArrayList<>(); 
 		try {

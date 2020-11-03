@@ -51,6 +51,12 @@ public class Controller extends HttpServlet {
 		case "/sign-in":
 			this.loginUser(request, response);
 			break;	
+		case "/register":
+			this.showRegister(request, response);
+			break;
+		case "/sign-up":
+			this.registerUser(request, response);
+			break;
 		case "/main":
 			this.showMainPage(request, response);
 			break;
@@ -86,6 +92,11 @@ public class Controller extends HttpServlet {
 	protected void showLogin(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		session.removeAttribute("hash");
 		this.getServletContext().getRequestDispatcher("/login.jsp").forward(request, response);
+	}
+	
+	protected void showRegister(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		session.removeAttribute("hash");
+		this.getServletContext().getRequestDispatcher("/register.jsp").forward(request, response);
 	}
 	
 	protected void showMainPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -194,6 +205,21 @@ public class Controller extends HttpServlet {
 				response.sendRedirect("doctor");
 			else if (status == UserStatus.PATIENT)
 				response.sendRedirect("main");
+		}
+		catch (NoSuchAlgorithmException e) {}
+	}
+	
+	protected void registerUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		try {
+			String hash = getHash(request.getParameter("username") + request.getParameter("password"));
+			/*session.setAttribute("hash", hash);
+			UserStatus status = dao.GetUserAccount(hash).status;
+			session.setAttribute("status", status.toString());
+			
+			if (status == UserStatus.DOCTOR)
+				response.sendRedirect("doctor");
+			else if (status == UserStatus.PATIENT)
+				response.sendRedirect("main");*/
 		}
 		catch (NoSuchAlgorithmException e) {}
 	}

@@ -7,25 +7,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <style><%@include file="/WEB-INF/CSS/header-style.css"%></style>
-    <style>
-    	.wrapper {
-    		display: flex;
-  			flex-direction: row;
-  			justify-content: center;	
-    	}
-    	.main-block {
-    		margin-top: 20px;
-			background-color: #F8F8FF;
-			width: 600px;
-			height: 600px;
-			border: 1px solid #DCDCDC;
-			border-radius: 5px;
-			text-align: center;
-    	}
-    	.main-block h3 {
-    		margin: 200px;
-    	}
-    </style>
+	<style><%@include file="WEB-INF/CSS/prescription-style.css"%></style>
     <style><%@include file="/WEB-INF/CSS/footer-style.css"%></style>
     <title>WebHospital</title>
 </head>
@@ -35,8 +17,8 @@
 
 	<div class="wrapper">
 		<div class="main-block">
-			<h3>Hi girls<h3>
-		</div>	
+			<h3>Welcome to WebHospital</h3>
+		</div>
 	</div>
 	
 	<%@ include file="WEB-INF/templates/footer.jsp" %>

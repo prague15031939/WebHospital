@@ -26,8 +26,7 @@
 
       <input type="submit" class="logbtn" value="Sign in">
       
-      <div class="bottom-text">Do not have an account? <a href="#" class="redirect-href">Sign up</a></div>
-      <div class="bottom-error-text"></div>
+      <div class="bottom-text">Do not have an account? <a href="register" class="redirect-href">Sign up</a></div>
     </form>
 	
 	<%@ include file="WEB-INF/templates/footer.jsp" %>

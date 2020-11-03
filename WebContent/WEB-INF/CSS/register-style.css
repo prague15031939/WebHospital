@@ -1,0 +1,110 @@
+* {
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+  font-family: gill sans mt;
+  box-sizing: border-box;
+}
+
+body {
+	background-color: #edeef0;
+	background-image: url("/WebHospital/image/register-background.jpg");
+	width: 100%;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	display: flex;
+  	flex-direction: column;
+ 	justify-content: space-between;
+}
+
+.register-form {
+  width: 700px;
+  background-color: #F8F8FF;
+  padding: 40px;
+  padding-bottom: 30px;
+  border: 1px solid #DCDCDC;
+  border-radius: 5px;
+  margin: 40px auto auto auto;
+}
+
+.register-form {
+  padding-top: 40px;
+}
+
+.login-form h1, .register-form h1 {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.wrapper {
+	display: flex;
+  	flex-direction: row;
+  	justify-content: space-between;	
+}
+
+.main-fields, .secondary-fields {
+	width: 260px;
+}
+
+.txtb {
+  border: 1px solid #DCDCDC;
+  border-radius: 5px;
+  position: relative;
+  margin-top: 10px;
+  margin-bottom: 15px;
+}
+
+.txtb input {
+  font-size: 15px;
+  color: black;
+  border: none;
+  width: 100%;
+  outline: none;
+  background: none;
+  padding: 0 5px;
+  height: 40px;
+}
+
+.label, .logbtn {
+    font-size: 16px;
+}
+
+.logbtn {
+  margin: 30px auto 30px auto;
+  border-radius: 5px;
+  display: block;
+  width: 260px;
+  height: 50px;
+  border: none;
+  background-color: #0f3057;
+  background-size: 200%;
+  color: white;
+  outline: none;
+  cursor: pointer;
+}
+
+.logbtn:hover{
+	background: linear-gradient(120deg,#008891,#00587a,#0f3057);
+}
+
+.bottom-error-text, .bottom-text {
+  text-align: center;
+}
+
+.redirect-href {
+  text-decoration: none;
+  color: #e94560;
+}
+
+.custom-select {
+	position: relative;
+ 	margin-top: 10px;
+ 	margin-bottom: 15px;
+	font-size: 15px;
+	font-family: gill sans mt;
+	border: 1px solid #DCDCDC;
+	border-radius: 5px;
+	height: 40px;
+	width: 100%;
+}

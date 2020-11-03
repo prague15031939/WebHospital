@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,7 +21,9 @@ import javax.servlet.http.HttpSession;
 
 import by.bsuir.dao.DAO;
 import by.bsuir.model.Doctor;
+import by.bsuir.model.DoctorSpecialization;
 import by.bsuir.model.Patient;
+import by.bsuir.model.PatientStatus;
 import by.bsuir.model.Prescription;
 import by.bsuir.model.UserAccount;
 import by.bsuir.model.UserStatus;
@@ -212,16 +215,53 @@ public class Controller extends HttpServlet {
 	protected void registerUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
 			String hash = getHash(request.getParameter("username") + request.getParameter("password"));
-			/*session.setAttribute("hash", hash);
-			UserStatus status = dao.GetUserAccount(hash).status;
-			session.setAttribute("status", status.toString());
+			if (dao.GetUserAccount(hash) != null) return;
 			
-			if (status == UserStatus.DOCTOR)
-				response.sendRedirect("doctor");
-			else if (status == UserStatus.PATIENT)
-				response.sendRedirect("main");*/
+			String status = request.getParameter("status");
+			UserAccount acc = new UserAccount(request.getParameter("username"), hash, request.getParameter("email"), status);
+			String ownName = request.getParameter("own-name");
+			Date birthDate = new SimpleDateFormat("yyyy-MM-dd").parse(request.getParameter("birthdate"));
+			
+			switch (status) {
+			
+			case "PATIENT":
+				String passport = request.getParameter("passport");
+				String livingPlace = request.getParameter("living-place");
+				String pastIllnesses = request.getParameter("past-illnesses");
+				int patientID = dao.registerUser(acc);
+				if (patientID != -1) {
+					Patient patient = new Patient(patientID, ownName, birthDate, livingPlace);
+					patient.passportNumber = passport;
+					patient.pastIllnesses = pastIllnesses;
+					patient.status = PatientStatus.ON_TREATMENT;
+					dao.registerPatient(patient);
+					
+					session.setAttribute("hash", hash);
+					session.setAttribute("status", status);
+					response.sendRedirect("main");
+				}
+				break;	
+				
+			case "DOCTOR":
+				String specialization = request.getParameter("specialization");
+				String regKey = request.getParameter("regkey");
+				if (regKey.equals("sho")) {
+					int doctorID = dao.registerUser(acc);
+					if (doctorID != -1) {
+						Doctor doctor = new Doctor(doctorID, ownName, birthDate, DoctorSpecialization.valueOf(specialization));
+						dao.registerDoctor(doctor);
+						
+						session.setAttribute("hash", hash);
+						session.setAttribute("status", status);
+						response.sendRedirect("main");
+					}
+				}
+				break;
+			}
 		}
-		catch (NoSuchAlgorithmException e) {}
+		catch (NoSuchAlgorithmException e) {} catch (ParseException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	protected void doPrescription(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

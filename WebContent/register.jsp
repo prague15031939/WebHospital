@@ -7,6 +7,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <style><%@include file="/WEB-INF/CSS/register-style.css"%></style>
     <style><%@include file="/WEB-INF/CSS/footer-style.css"%></style>
+    <script type="text/javascript"><%@include file="/WEB-INF/JS/change-status.js"%></script>
     <title>WebHospital</title>
 </head>
 
@@ -80,7 +81,7 @@
 	      			
 	      	   		<a class="label">Registration key</a>
 		      		<div class="txtb">
-		        		<input type="text" name="regkey">
+		        		<input type="password" name="regkey">
 		      		</div> 
 		      	</div>
 		      		
@@ -93,22 +94,6 @@
     </form>
 	
 	<%@ include file="WEB-INF/templates/footer.jsp" %>
-	
-	<script type="text/javascript">
-		function changeFunc() {
-		  var value = document.getElementById("status-select").value;
-		  var p = document.getElementById("patient-fields");
-		  var d = document.getElementById("doctor-fields");
-		  
-		  if (value === "PATIENT") {
-		    p.style.display = "block";
-		    d.style.display = "none";
-		  } else if (value === "DOCTOR") {
-		    p.style.display = "none";
-		    d.style.display = "block";
-		  }
-		}
-	</script>
 
 </body>
 </html>

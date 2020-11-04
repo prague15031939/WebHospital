@@ -36,7 +36,8 @@ public class Controller extends HttpServlet {
 		VIEW, EXECUTE
 	}
 	
-	HttpSession session;
+	private	String STUFF_REGISTRATION_KEY = "sho";
+	private HttpSession session;
 	private DAO dao;
 
     public Controller() {
@@ -94,11 +95,13 @@ public class Controller extends HttpServlet {
 	
 	protected void showLogin(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		session.removeAttribute("hash");
+		session.removeAttribute("status");
 		this.getServletContext().getRequestDispatcher("/login.jsp").forward(request, response);
 	}
 	
 	protected void showRegister(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		session.removeAttribute("hash");
+		session.removeAttribute("status");
 		this.getServletContext().getRequestDispatcher("/register.jsp").forward(request, response);
 	}
 	
@@ -200,8 +203,15 @@ public class Controller extends HttpServlet {
 	protected void loginUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
 			String hash = getHash(request.getParameter("username") + request.getParameter("password"));
+			UserAccount acc = dao.GetUserAccount(hash);
+			if (acc == null) {
+				request.setAttribute("error", "incorrect username or password");
+				this.getServletContext().getRequestDispatcher("/login.jsp").forward(request, response);
+				return;
+			}
+				
+			UserStatus status = acc.status;
 			session.setAttribute("hash", hash);
-			UserStatus status = dao.GetUserAccount(hash).status;
 			session.setAttribute("status", status.toString());
 			
 			if (status == UserStatus.DOCTOR)
@@ -215,7 +225,12 @@ public class Controller extends HttpServlet {
 	protected void registerUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
 			String hash = getHash(request.getParameter("username") + request.getParameter("password"));
-			if (dao.GetUserAccount(hash) != null) return;
+			if (dao.GetUserAccount(hash) != null)
+			{
+				request.setAttribute("error", "user is already registered");
+				this.getServletContext().getRequestDispatcher("/register.jsp").forward(request, response);
+				return;
+			}
 			
 			String status = request.getParameter("status");
 			UserAccount acc = new UserAccount(request.getParameter("username"), hash, request.getParameter("email"), status);
@@ -235,29 +250,30 @@ public class Controller extends HttpServlet {
 					patient.pastIllnesses = pastIllnesses;
 					patient.status = PatientStatus.ON_TREATMENT;
 					dao.registerPatient(patient);
-					
-					session.setAttribute("hash", hash);
-					session.setAttribute("status", status);
-					response.sendRedirect("main");
 				}
 				break;	
 				
 			case "DOCTOR":
 				String specialization = request.getParameter("specialization");
 				String regKey = request.getParameter("regkey");
-				if (regKey.equals("sho")) {
+				if (regKey.equals(STUFF_REGISTRATION_KEY)) {
 					int doctorID = dao.registerUser(acc);
 					if (doctorID != -1) {
 						Doctor doctor = new Doctor(doctorID, ownName, birthDate, DoctorSpecialization.valueOf(specialization));
 						dao.registerDoctor(doctor);
-						
-						session.setAttribute("hash", hash);
-						session.setAttribute("status", status);
-						response.sendRedirect("main");
 					}
+				}
+				else {
+					request.setAttribute("error", "invalid registration key");
+					this.getServletContext().getRequestDispatcher("/register.jsp").forward(request, response);
+					return;
 				}
 				break;
 			}
+			
+			session.setAttribute("hash", hash);
+			session.setAttribute("status", status);
+			response.sendRedirect("main");
 		}
 		catch (NoSuchAlgorithmException e) {} catch (ParseException e) {
 			e.printStackTrace();

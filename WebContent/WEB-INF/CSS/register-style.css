@@ -92,6 +92,11 @@ body {
   text-align: center;
 }
 
+.bottom-error-text {
+  margin-top: 20px;
+  text-decoration: underline;
+}
+
 .redirect-href {
   text-decoration: none;
   color: #e94560;

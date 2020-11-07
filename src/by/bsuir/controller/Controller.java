@@ -124,7 +124,11 @@ public class Controller extends HttpServlet {
 		request.setAttribute("doctorEmail", accDoctor.email);
 		request.setAttribute("doctor", doctor);
 		
-		ArrayList<Patient> patients = dao.GetDoctorsPatients(accDoctor.id);
+		ArrayList<Patient> patients = null;
+		if (doctor.specialization == DoctorSpecialization.NURSE)
+			patients = dao.GetAllPatients();
+		else
+			patients = dao.GetDoctorsPatients(accDoctor.id);
 		request.setAttribute("patientList", patients);
 		this.getServletContext().getRequestDispatcher("/doctor.jsp").forward(request, response);
 	}
@@ -145,6 +149,8 @@ public class Controller extends HttpServlet {
 		request.setAttribute("procedures", procedures);
 		ArrayList<String[]> manipulations = dao.GetManipulations(doctor.specialization);
 		request.setAttribute("manipulations", manipulations);
+		
+		request.setAttribute("canSubmit", dao.serviceExists(patient.id, doctor.id));
 		
 		this.getServletContext().getRequestDispatcher("/doctor-prescribe.jsp").forward(request, response);
 	}
@@ -174,7 +180,8 @@ public class Controller extends HttpServlet {
 	protected void showPrescription(HttpServletRequest request, HttpServletResponse response, OpenPrescriptionMode mode) throws ServletException, IOException {
 		int prescriptionID = Integer.parseInt(request.getParameter("id"));
 		
-		request.setAttribute("accountID", dao.GetUserAccount((String)session.getAttribute("hash")).id);
+		int accountID = dao.GetUserAccount((String)session.getAttribute("hash")).id;
+		request.setAttribute("accountID", accountID);
 		request.setAttribute("status", session.getAttribute("status"));
 		
 		Prescription item = dao.GetPrescription(prescriptionID);
@@ -187,6 +194,14 @@ public class Controller extends HttpServlet {
 		request.setAttribute("patientInfo", patient.name + " " + patient.passportNumber + " " + patient.birthDate + " " + accPatient.email);
 		request.setAttribute("doctorInfo", doctor.getQuickInfo() + " " + accDoctor.email);
 		request.setAttribute("timestamp", item.getStringTime());
+		
+		if (mode == OpenPrescriptionMode.EXECUTE) {
+			Doctor currentDoctor = dao.GetDoctor(accountID);
+			if (currentDoctor.specialization != DoctorSpecialization.NURSE) {
+				request.setAttribute("procAccessors", filterExecutionOptions(item.procedures, currentDoctor.specialization, "proc"));
+				request.setAttribute("operAccessors", filterExecutionOptions(item.manipulations, currentDoctor.specialization, "oper"));
+			}
+		}
 		
 		request.setAttribute("prescriptionID", prescriptionID);
 		request.setAttribute("diagnosis", item.diagnosis);
@@ -214,7 +229,7 @@ public class Controller extends HttpServlet {
 			session.setAttribute("hash", hash);
 			session.setAttribute("status", status.toString());
 			
-			if (status == UserStatus.DOCTOR)
+			if (status == UserStatus.DOCTOR || status == UserStatus.NURSE)
 				response.sendRedirect("doctor");
 			else if (status == UserStatus.PATIENT)
 				response.sendRedirect("main");
@@ -253,6 +268,7 @@ public class Controller extends HttpServlet {
 				}
 				break;	
 				
+			case "NURSE":
 			case "DOCTOR":
 				String specialization = request.getParameter("specialization");
 				String regKey = request.getParameter("regkey");
@@ -329,6 +345,25 @@ public class Controller extends HttpServlet {
 		}
 		
 		return target;
+	}
+	
+	protected Boolean[] filterExecutionOptions(String[] TargetOptions, DoctorSpecialization spec, String type) {
+		ArrayList<String[]> DoctorOptions = null;
+		if (type == "proc") DoctorOptions = dao.GetProcedures(spec);
+		else if (type == "oper") DoctorOptions = dao.GetManipulations(spec);
+		
+		ArrayList<String> SourceOptions = new ArrayList<String>();
+		for (String[] itemList : DoctorOptions)
+			for (String item : itemList)
+				SourceOptions.add(item);
+		
+		Boolean[] result = new Boolean[TargetOptions.length];
+ 		for (int i = 0; i < TargetOptions.length; i++) {
+			if (SourceOptions.contains(TargetOptions[i])) result[i] = true;
+			else result[i] = false;
+		}
+ 		
+ 		return result;
 	}
 	
 	protected String getHash(String text) throws NoSuchAlgorithmException {

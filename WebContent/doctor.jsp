@@ -40,10 +40,12 @@
 							<div class="patient-info-item"><c:out value="${human.birthDate}" /></div>
 							<div class="patient-info-livingplace"><c:out value="${human.livingPlace}" /></div>
 						</div>
-						<div class="actions">
-							<div class="action-button1"><a href="doctor-prescribe?id=<c:out value='${human.id}' />">prescribe</a></div>
-							<div class="action-button2"><a href="#">discharge</a></div>
-						</div>
+						<c:if test="${status eq 'DOCTOR'}">
+							<div class="actions">
+								<div class="action-button1"><a href="doctor-prescribe?id=<c:out value='${human.id}' />">prescribe</a></div>
+								<div class="action-button2"><a href="#">discharge</a></div>
+							</div>
+						</c:if>
 					</div>
 				</c:forEach>
 					

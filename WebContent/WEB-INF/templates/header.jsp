@@ -7,7 +7,7 @@
 				<c:when test="${status eq 'PATIENT'}">		
 					<a href="patient?id=<c:out value='${accountID}' />" class="navigation-link">prescriptions</a>
 				</c:when>
-				<c:when test="${status eq 'DOCTOR'}">		
+				<c:when test="${(status eq 'DOCTOR') || (status eq 'NURSE')}">		
 					<a href="doctor" class="navigation-link">patients</a>
 				</c:when>
 			</c:choose>

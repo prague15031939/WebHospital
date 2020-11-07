@@ -38,6 +38,7 @@
 		      <select class="custom-select" id="status-select" name="status" onchange="changeFunc();">
 		    	<option value="PATIENT">patient</option>
 		    	<option selected value="DOCTOR">doctor</option>
+		    	<option value="NURSE">nurse</option>
 		      </select>
 	      	</div>
 	      	
@@ -66,12 +67,13 @@
 		      	
 		      	<div id="doctor-fields">
 		      		<a class="label">Specialization</a>
-	        		<select class="custom-select" id="specialization" name="specialization">
+	        		<select class="custom-select" id="specialization" name="specialization" onchange="changeSpec();">
 	    				<option selected value="THERAPIST">therapist</option>
 	    				<option value="OPHTHALMOLOGIST">ophthalmologist</option>
 	    				<option value="OTOLARYNGOLOGIST">otolaryngologist</option>
 	    				<option value="CARDIOLOGIST">cardiologist</option>
 	    				<option value="SURGEON">surgeon</option>
+	    				<option value="NURSE">nurse</option>
 	      			</select>
 	      			
 	      	   		<a class="label">Registration key</a>

@@ -83,7 +83,15 @@
 					
 		        </div>
 		        
-		        <input type="submit" class="createbtn" value="submit">
+		        <c:choose>
+		        	<c:when test="${canSubmit eq true}">
+		        		<input type="submit" class="createbtn" value="submit">
+		        	</c:when>
+		        	<c:otherwise>
+		        		<p id="cannot-submit-text">cannot prescribe to this patient</p>
+		        	</c:otherwise>
+		        </c:choose>
+		        
 		      </form>
 	    	</div>
 	    </div>

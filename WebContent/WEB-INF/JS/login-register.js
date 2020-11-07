@@ -8,11 +8,23 @@
 		    p.style.display = "block";
 		    ill.style.display = "block";
 		    d.style.display = "none";
-		  } else if (value === "DOCTOR") {
+		  } else if (value === "DOCTOR" || value === "NURSE") {
 		    p.style.display = "none";
 		    ill.style.display = "none";
 		    d.style.display = "block";
 		  }
+		  
+		  if (value === "NURSE")
+		  	document.getElementById("specialization")[5].selected = true;
+		  if (value === "DOCTOR" && document.getElementById("specialization").value === "NURSE")
+		  	document.getElementById("specialization")[0].selected = true;
+		}
+		
+		function changeSpec() {
+			if (document.getElementById("status-select").value == "NURSE")
+				document.getElementById("specialization")[5].selected = true;
+			if (document.getElementById("specialization").value == "NURSE" && document.getElementById("status-select").value == "DOCTOR")
+				document.getElementById("specialization")[0].selected = true;
 		}
 			
 		var error = false;
@@ -27,7 +39,7 @@
 			
 			if (document.getElementById("status-select").value === "PATIENT") 
 				patientElements.forEach((el) => track(el));
-			else if (document.getElementById("status-select").value === "DOCTOR")
+			else if (document.getElementById("status-select").value === "DOCTOR" || document.getElementById("status-select").value === "NURSE")
 				doctorElements.forEach((el) => track(el));
 				
 			if (!error)

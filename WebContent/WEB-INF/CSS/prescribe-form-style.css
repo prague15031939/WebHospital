@@ -160,6 +160,13 @@ body {
   cursor: pointer;
 }
 
+#cannot-submit-text {
+	text-align: center;
+	font-size: 16px;
+	font-family: gill sans mt;
+	color: #e94560;
+}
+
 .createbtn:hover{
 	background: linear-gradient(120deg,#008891,#00587a,#0f3057);
 }

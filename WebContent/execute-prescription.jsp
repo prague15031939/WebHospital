@@ -14,9 +14,7 @@
     <title>WebHospital</title>
 </head>
 <body>
-
 	<%@ include file="WEB-INF/templates/header.jsp" %>
-
 	<div class="wrapper">
 		<div class="main-block">
 			<form action="execute?id=<c:out value="${prescriptionID}"/>" class="prescription" method="POST">
@@ -35,7 +33,7 @@
 		        </div>
 		        <div class="proc-region">
 		        	<div class="label-c">therapeutic procedures</div>				 
-					<c:forEach var="proc" items="${procedures}">
+					<c:forEach var="proc" items="${procedures}" varStatus="varstatus">
 						<div class="procedure-item">
 						
 							<c:choose>
@@ -46,7 +44,16 @@
 									</a>
 								</c:when>
 								<c:otherwise>
-									<input type="checkbox" name="proc-box" value="<c:out value="${proc}" />">
+									
+									<c:choose>
+										<c:when test="${(procAccessors[varstatus.index] eq true) || (status eq 'NURSE')}">
+											<input type="checkbox" name="proc-box" value="<c:out value="${proc}" />">
+										</c:when>
+										<c:otherwise>
+											<input type="checkbox" name="proc-box" value="<c:out value="${proc}" />" disabled>
+										</c:otherwise>
+									</c:choose>										
+									
 									<label for="proc-box"><c:out value="${proc}" /></label>
 								</c:otherwise>
 							</c:choose>
@@ -78,29 +85,36 @@
 		          	</c:forEach>
 		        </div>
 		        
-		        <c:if test="${status ne 'NURSE'}">
-			        <div class="oper-region">
-			        	<div class="label-c">manipulations</div>				 
-						<c:forEach var="oper" items="${manipulations}">
-					  		<div class="operation-item">
-					  			
-					  			<c:choose>
-									<c:when test="${fn:substring(oper, 0, 1) eq '@'}">
-										<input type="checkbox" name="manipulation-box" value="<c:out value="${oper}" />" checked disabled>
-										<a data-tooltip="<c:out value="${fn:substringAfter(oper, '!?')}" />">
-											<c:out value="${fn:substringBefore(fn:substringAfter(oper, '@'), '!?')}" />
-										</a>
-									</c:when>
-									<c:otherwise>
-										<input type="checkbox" name="manipulation-box" value="<c:out value="${oper}" />">
-										<label for="manipulation-box"><c:out value="${oper}" /></label>
-									</c:otherwise>
-								</c:choose>
-					  			
-					  		</div>
-						</c:forEach>
-			        </div>
-		        </c:if>
+		        <div class="oper-region">
+		        	<div class="label-c">manipulations</div>				 
+					<c:forEach var="oper" items="${manipulations}" varStatus="varstatus">
+				  		<div class="operation-item">
+				  			
+				  			<c:choose>
+								<c:when test="${fn:substring(oper, 0, 1) eq '@'}">
+									<input type="checkbox" name="manipulation-box" value="<c:out value="${oper}" />" checked disabled>
+									<a data-tooltip="<c:out value="${fn:substringAfter(oper, '!?')}" />">
+										<c:out value="${fn:substringBefore(fn:substringAfter(oper, '@'), '!?')}" />
+									</a>
+								</c:when>
+								<c:otherwise>
+								
+									<c:choose>
+										<c:when test="${(operAccessors[varstatus.index] eq true) && (status eq 'DOCTOR')}">
+											<input type="checkbox" name="manipulation-box" value="<c:out value="${oper}" />">
+										</c:when>
+										<c:otherwise>
+											<input type="checkbox" name="manipulation-box" value="<c:out value="${oper}" />" disabled>
+										</c:otherwise>
+									</c:choose>	
+
+									<label for="manipulation-box"><c:out value="${oper}" /></label>
+								</c:otherwise>
+							</c:choose>
+				  			
+				  		</div>
+					</c:forEach>
+		        </div>
 		        
 		        <input type="submit" class="executebtn" value="execute">
 		        

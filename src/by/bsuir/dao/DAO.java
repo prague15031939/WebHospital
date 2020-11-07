@@ -135,8 +135,9 @@ public class DAO {
 			preparedStatement.setInt(1, doctorID);
 			ResultSet rs = preparedStatement.executeQuery();
 			while (rs.next()) {
-				int patientID = Integer.parseInt(rs.getString("patient_id"));
-				patients.add(GetPatient(patientID));
+				Patient patient = GetPatient(Integer.parseInt(rs.getString("patient_id")));
+				if (patient.status == PatientStatus.ON_TREATMENT)
+					patients.add(patient);
 			}
 		} 
 		catch (Exception e) {}
@@ -165,6 +166,30 @@ public class DAO {
 		catch (Exception e) {}
 		
 		return pat;
+	}
+	
+	public ArrayList<Patient> GetAllPatients() {
+		ArrayList<Patient> patients = new ArrayList<>(); 
+		try {
+			Connection connection = getConnection();
+			PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `patient`");
+			ResultSet rs = preparedStatement.executeQuery();
+			while (rs.next()) {
+				int id = Integer.parseInt(rs.getString("id"));
+				String name = rs.getString("name");
+				Date birthDate = rs.getDate("birth_date");
+				String livingPlace = rs.getString("living_place");
+				Patient human = new Patient(id, name, birthDate, livingPlace);
+				human.passportNumber = rs.getString("passport");
+				human.pastIllnesses = rs.getString("past_ill");
+				human.status = PatientStatus.valueOf(rs.getString("status"));
+				if (human.status == PatientStatus.ON_TREATMENT)
+					patients.add(human);
+			}
+		} 
+		catch (Exception e) {}
+		
+		return patients;
 	}
 	
 	public Doctor GetDoctor(int doctorID) {
@@ -302,6 +327,21 @@ public class DAO {
 		catch (Exception e) {}
 		
 		return null;
+	}
+	
+	public Boolean serviceExists(int patientID, int doctorID) {
+		try {
+			Connection connection = getConnection();
+			PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `service` WHERE `patient_id` = ? AND `doctor_id` = ?");
+			preparedStatement.setInt(1, patientID);
+			preparedStatement.setInt(2, doctorID);
+			ResultSet rs = preparedStatement.executeQuery();
+			while (rs.next()) 
+				return true;
+		} 
+		catch (Exception e) {}
+		
+		return false;
 	}
 
 }

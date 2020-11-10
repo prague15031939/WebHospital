@@ -16,7 +16,7 @@ public class ImageController extends HttpServlet {
 		response.setContentType("image/jpeg");
 		String url = request.getRequestURL().toString();
 		String relativeImagePath = url.replaceFirst(".*/image/", "");
-		String appPath = request.getServletContext().getRealPath("") + "WEB-INF/images/";
+		String appPath = request.getServletContext().getRealPath("WEB-INF/images/");
 		String absoluteImagePath = appPath + relativeImagePath;
 		
 		File f = new File(absoluteImagePath);

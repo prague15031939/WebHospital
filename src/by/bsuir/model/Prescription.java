@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import by.bsuir.dao.DAO;
+import by.bsuir.dao.DoctorDAO;
 
 public class Prescription {
 	
@@ -41,6 +41,6 @@ public class Prescription {
 	}
 	
 	public String getQuickDoctorInfo() {
-		return new DAO().GetDoctor(doctorID).getQuickInfo();
+		return new DoctorDAO().GetDoctor(doctorID).getQuickInfo();
 	}
 }

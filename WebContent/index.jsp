@@ -7,7 +7,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <style><%@include file="/WEB-INF/CSS/header-style.css"%></style>
-	<style><%@include file="WEB-INF/CSS/prescription-style.css"%></style>
+	<style><%@include file="WEB-INF/CSS/main-style.css"%></style>
     <style><%@include file="/WEB-INF/CSS/footer-style.css"%></style>
     <title>WebHospital</title>
 </head>
@@ -16,9 +16,17 @@
 	<%@ include file="WEB-INF/templates/header.jsp" %>
 
 	<div class="wrapper">
-		<div class="main-block">
-			<h3>Welcome to WebHospital</h3>
+		<div class="secondary-block">
+			<div class="inner-secondary">
+				<p>Welcome<br/>to<br/>WebHospital</p>
+			</div>
 		</div>
+		
+		<div class="main-block">
+			<div class="inner-main">
+					
+			</div>
+	    </div>
 	</div>
 	
 	<%@ include file="WEB-INF/templates/footer.jsp" %>

@@ -19,7 +19,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import by.bsuir.dao.DAO;
+import by.bsuir.dao.AccountDAO;
+import by.bsuir.dao.DoctorDAO;
+import by.bsuir.dao.PrescriptionDAO;
 import by.bsuir.model.Doctor;
 import by.bsuir.model.DoctorSpecialization;
 import by.bsuir.model.Patient;
@@ -31,17 +33,14 @@ import by.bsuir.model.UserStatus;
 @WebServlet("/")
 public class Controller extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	
-	enum OpenPrescriptionMode {
-		VIEW, EXECUTE
-	}
-	
-	private	String STUFF_REGISTRATION_KEY = "sho";
+
 	private HttpSession session;
-	private DAO dao;
+	private AccountDAO daoAccount = new AccountDAO();
+	private DoctorDAO daoDoctor = new DoctorDAO();
+	private PrescriptionDAO daoPrescription = new PrescriptionDAO();
 
     public Controller() {
-    	dao = new DAO();
+    	super();
     }
     
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -49,41 +48,11 @@ public class Controller extends HttpServlet {
 		String action = request.getServletPath();
 		
 		switch (action) {
-		case "/login":
-			this.showLogin(request, response);
-			break;
-		case "/sign-in":
-			this.loginUser(request, response);
-			break;	
-		case "/register":
-			this.showRegister(request, response);
-			break;
-		case "/sign-up":
-			this.registerUser(request, response);
-			break;
-		case "/main":
-			this.showMainPage(request, response);
-			break;
-		case "/doctor":
-			this.showDoctor(request, response);
-			break;
-		case "/doctor-prescribe":
-			this.showCreator(request, response);
-			break;
-		case "/prescribe":
-			this.doPrescription(request, response);
-			break;
 		case "/patient":
 			this.showPatient(request, response);
 			break;
 		case "/prescription":
-			this.showPrescription(request, response, OpenPrescriptionMode.VIEW);
-			break;
-		case "/execute-prescription":
-			this.showPrescription(request, response, OpenPrescriptionMode.EXECUTE);
-			break;
-		case "/execute":
-			this.doExecution(request, response);
+			this.showPrescription(request, response);
 			break;
 		}
 		
@@ -93,115 +62,43 @@ public class Controller extends HttpServlet {
 		doGet(request, response);
 	}
 	
-	protected void showLogin(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		session.removeAttribute("hash");
-		session.removeAttribute("status");
-		this.getServletContext().getRequestDispatcher("/login.jsp").forward(request, response);
-	}
-	
-	protected void showRegister(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		session.removeAttribute("hash");
-		session.removeAttribute("status");
-		this.getServletContext().getRequestDispatcher("/register.jsp").forward(request, response);
-	}
-	
-	protected void showMainPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		if (session.getAttribute("hash") != null) {
-			request.setAttribute("accountID", dao.GetUserAccount((String)session.getAttribute("hash")).id);
-			request.setAttribute("status", session.getAttribute("status"));
-		}
-		this.getServletContext().getRequestDispatcher("/index.jsp").forward(request, response);
-	}
-	
-	protected void showDoctor(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		UserAccount accDoctor = dao.GetUserAccount((String)session.getAttribute("hash"));
-		Doctor doctor = dao.GetDoctor(accDoctor.id);
-		
-		request.setAttribute("accountID", accDoctor.id);
-		request.setAttribute("status", session.getAttribute("status"));
-		request.setAttribute("doctorSpecialization", doctor.specialization.toString().toLowerCase().replaceAll("_", " "));
-		request.setAttribute("doctorImage", accDoctor.image);
-		request.setAttribute("doctorEmail", accDoctor.email);
-		request.setAttribute("doctor", doctor);
-		
-		ArrayList<Patient> patients = null;
-		if (doctor.specialization == DoctorSpecialization.NURSE)
-			patients = dao.GetAllPatients();
-		else
-			patients = dao.GetDoctorsPatients(accDoctor.id);
-		request.setAttribute("patientList", patients);
-		this.getServletContext().getRequestDispatcher("/doctor.jsp").forward(request, response);
-	}
-	
-	protected void showCreator(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		int patientID = Integer.parseInt(request.getParameter("id"));
-		Patient patient = dao.GetPatient(patientID);
-		UserAccount accPatient = dao.GetUserAccount(patientID);
-		Doctor doctor = dao.GetDoctor(dao.GetUserAccount((String)session.getAttribute("hash")).id);
-		
-		request.setAttribute("accountID", doctor.id);
-		request.setAttribute("status", session.getAttribute("status"));
-		request.setAttribute("patient", patient);
-		request.setAttribute("patientImage", accPatient.image);
-		request.setAttribute("patientEmail", accPatient.email);
-		
-		ArrayList<String[]> procedures = dao.GetProcedures(doctor.specialization);
-		request.setAttribute("procedures", procedures);
-		ArrayList<String[]> manipulations = dao.GetManipulations(doctor.specialization);
-		request.setAttribute("manipulations", manipulations);
-		
-		request.setAttribute("canSubmit", dao.serviceExists(patient.id, doctor.id));
-		
-		this.getServletContext().getRequestDispatcher("/doctor-prescribe.jsp").forward(request, response);
-	}
-	
 	protected void showPatient(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setAttribute("status", session.getAttribute("status"));
-		if (request.getParameter("id") == null) {
-			this.getServletContext().getRequestDispatcher("/index.jsp").forward(request, response);
-			return;
-		}
+		request.setAttribute("image", session.getAttribute("image"));
 		
 		int patientID = Integer.parseInt(request.getParameter("id"));
-		UserAccount accPatient = dao.GetUserAccount(patientID);
-		request.setAttribute("accountID", dao.GetUserAccount((String)session.getAttribute("hash")).id);
+		UserAccount accPatient = daoAccount.GetUserAccount(patientID);
+		request.setAttribute("accountID", daoAccount.GetUserAccount((String)session.getAttribute("hash")).id);
 		request.setAttribute("patientImage", accPatient.image);
 		request.setAttribute("patientEmail", accPatient.email);
 		
-		Patient patient = dao.GetPatient(patientID);
+		Patient patient = daoDoctor.GetPatient(patientID);
 		request.setAttribute("patient", patient);
 		
-		ArrayList<Prescription> prescriptions = dao.GetPatientsPrescriptions(patientID);
+		ArrayList<Prescription> prescriptions = daoPrescription.GetPatientsPrescriptions(patientID);
 		request.setAttribute("prescriptionsList", prescriptions);
 		
 		this.getServletContext().getRequestDispatcher("/patient.jsp").forward(request, response);
 	}
 	
-	protected void showPrescription(HttpServletRequest request, HttpServletResponse response, OpenPrescriptionMode mode) throws ServletException, IOException {
+	protected void showPrescription(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		int prescriptionID = Integer.parseInt(request.getParameter("id"));
 		
-		int accountID = dao.GetUserAccount((String)session.getAttribute("hash")).id;
+		int accountID = daoAccount.GetUserAccount((String)session.getAttribute("hash")).id;
 		request.setAttribute("accountID", accountID);
 		request.setAttribute("status", session.getAttribute("status"));
+		request.setAttribute("image", session.getAttribute("image"));
 		
-		Prescription item = dao.GetPrescription(prescriptionID);
+		Prescription item = daoPrescription.GetPrescription(prescriptionID);
 		
-		UserAccount accPatient = dao.GetUserAccount(item.patientID);
-		Patient patient = dao.GetPatient(item.patientID);
-		UserAccount accDoctor = dao.GetUserAccount(item.doctorID);
-		Doctor doctor = dao.GetDoctor(item.doctorID);
+		UserAccount accPatient = daoAccount.GetUserAccount(item.patientID);
+		Patient patient = daoDoctor.GetPatient(item.patientID);
+		UserAccount accDoctor = daoAccount.GetUserAccount(item.doctorID);
+		Doctor doctor = daoDoctor.GetDoctor(item.doctorID);
 		
 		request.setAttribute("patientInfo", patient.name + " " + patient.passportNumber + " " + patient.birthDate + " " + accPatient.email);
 		request.setAttribute("doctorInfo", doctor.getQuickInfo() + " " + accDoctor.email);
 		request.setAttribute("timestamp", item.getStringTime());
-		
-		if (mode == OpenPrescriptionMode.EXECUTE) {
-			Doctor currentDoctor = dao.GetDoctor(accountID);
-			if (currentDoctor.specialization != DoctorSpecialization.NURSE) {
-				request.setAttribute("procAccessors", filterExecutionOptions(item.procedures, currentDoctor.specialization, "proc"));
-				request.setAttribute("operAccessors", filterExecutionOptions(item.manipulations, currentDoctor.specialization, "oper"));
-			}
-		}
 		
 		request.setAttribute("prescriptionID", prescriptionID);
 		request.setAttribute("diagnosis", item.diagnosis);
@@ -209,176 +106,7 @@ public class Controller extends HttpServlet {
 		request.setAttribute("procedures", item.procedures);
 		request.setAttribute("manipulations", item.manipulations);
 		
-		if (mode == OpenPrescriptionMode.VIEW)
-			this.getServletContext().getRequestDispatcher("/prescription.jsp").forward(request, response);
-		else if (mode == OpenPrescriptionMode.EXECUTE)
-			this.getServletContext().getRequestDispatcher("/execute-prescription.jsp").forward(request, response);
-	}
-	
-	protected void loginUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		try {
-			String hash = getHash(request.getParameter("username") + request.getParameter("password"));
-			UserAccount acc = dao.GetUserAccount(hash);
-			if (acc == null) {
-				request.setAttribute("error", "incorrect username or password");
-				this.getServletContext().getRequestDispatcher("/login.jsp").forward(request, response);
-				return;
-			}
-				
-			UserStatus status = acc.status;
-			session.setAttribute("hash", hash);
-			session.setAttribute("status", status.toString());
-			
-			if (status == UserStatus.DOCTOR || status == UserStatus.NURSE)
-				response.sendRedirect("doctor");
-			else if (status == UserStatus.PATIENT)
-				response.sendRedirect("main");
-		}
-		catch (NoSuchAlgorithmException e) {}
-	}
-	
-	protected void registerUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		try {
-			String hash = getHash(request.getParameter("username") + request.getParameter("password"));
-			if (dao.GetUserAccount(hash) != null)
-			{
-				request.setAttribute("error", "user is already registered");
-				this.getServletContext().getRequestDispatcher("/register.jsp").forward(request, response);
-				return;
-			}
-			
-			String status = request.getParameter("status");
-			UserAccount acc = new UserAccount(request.getParameter("username"), hash, request.getParameter("email"), status);
-			String ownName = request.getParameter("own-name");
-			Date birthDate = new SimpleDateFormat("yyyy-MM-dd").parse(request.getParameter("birthdate"));
-			
-			switch (status) {
-			
-			case "PATIENT":
-				String passport = request.getParameter("passport");
-				String livingPlace = request.getParameter("living-place");
-				String pastIllnesses = request.getParameter("past-illnesses");
-				int patientID = dao.registerUser(acc);
-				if (patientID != -1) {
-					Patient patient = new Patient(patientID, ownName, birthDate, livingPlace);
-					patient.passportNumber = passport;
-					patient.pastIllnesses = pastIllnesses;
-					patient.status = PatientStatus.ON_TREATMENT;
-					dao.registerPatient(patient);
-				}
-				break;	
-				
-			case "NURSE":
-			case "DOCTOR":
-				String specialization = request.getParameter("specialization");
-				String regKey = request.getParameter("regkey");
-				if (regKey.equals(STUFF_REGISTRATION_KEY)) {
-					int doctorID = dao.registerUser(acc);
-					if (doctorID != -1) {
-						Doctor doctor = new Doctor(doctorID, ownName, birthDate, DoctorSpecialization.valueOf(specialization));
-						dao.registerDoctor(doctor);
-					}
-				}
-				else {
-					request.setAttribute("error", "invalid registration key");
-					this.getServletContext().getRequestDispatcher("/register.jsp").forward(request, response);
-					return;
-				}
-				break;
-			}
-			
-			session.setAttribute("hash", hash);
-			session.setAttribute("status", status);
-			response.sendRedirect("main");
-		}
-		catch (NoSuchAlgorithmException e) {} catch (ParseException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	protected void doPrescription(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Prescription prscr = new Prescription(  
-			request.getParameter("diagnosis"), 
-			request.getParameter("medicines").split(";"), 
-			request.getParameterValues("proc-box"),
-			request.getParameterValues("manipulation-box")
-		);
-		
-		int patientID = Integer.parseInt(request.getParameter("id"));
-		Patient patient = dao.GetPatient(patientID);
-		UserAccount doctor = dao.GetUserAccount((String)session.getAttribute("hash"));
-		prscr.timestamp = new Date();
-		int prescriptionID = dao.doPrescription(prscr, doctor.id, patient.id);
-		
-		if (prescriptionID != -1)
-			response.sendRedirect("prescription?id=" + String.valueOf(prescriptionID));
-	}
-	
-	protected void doExecution(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		int prescriptionID = Integer.parseInt(request.getParameter("id"));
-		String[] medicines = request.getParameterValues("medicine-box");
-		String[] procedures = request.getParameterValues("proc-box");
-		String[] manipulations = request.getParameterValues("manipulation-box");
-		
-		String timestamp = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date());		
-		Doctor doctor = dao.GetDoctor(dao.GetUserAccount((String)session.getAttribute("hash")).id);
-		Prescription prescription = dao.GetPrescription(prescriptionID);
-
-		if (procedures != null) prescription.procedures = modifyPrescriptionElement(procedures, prescription.procedures, doctor, timestamp);
-		if (medicines != null) prescription.medicines = modifyPrescriptionElement(medicines, prescription.medicines, doctor, timestamp);
-		if (manipulations != null) prescription.manipulations = modifyPrescriptionElement(manipulations, prescription.manipulations, doctor, timestamp);
-
-		dao.doExecution(prescription);
-		
-		if (prescriptionID != -1)
-			response.sendRedirect("prescription?id=" + String.valueOf(prescriptionID));
-	}
-	
-	protected String[] modifyPrescriptionElement(String[] source, String[] target, Doctor doctor, String timestamp) {
-		for (int i = 0; i < source.length; i++) {
-			for (int j = 0; j < target.length; j++) {
-				if (!target[j].trim().startsWith("@") && target[j].equals(source[i])) {
-					target[j] = String.format("@%s!?%s  %s", source[i], doctor.name, timestamp);
-					break;
-				}
-			}
-		}
-		
-		return target;
-	}
-	
-	protected Boolean[] filterExecutionOptions(String[] TargetOptions, DoctorSpecialization spec, String type) {
-		ArrayList<String[]> DoctorOptions = null;
-		if (type == "proc") DoctorOptions = dao.GetProcedures(spec);
-		else if (type == "oper") DoctorOptions = dao.GetManipulations(spec);
-		
-		ArrayList<String> SourceOptions = new ArrayList<String>();
-		for (String[] itemList : DoctorOptions)
-			for (String item : itemList)
-				SourceOptions.add(item);
-		
-		Boolean[] result = new Boolean[TargetOptions.length];
- 		for (int i = 0; i < TargetOptions.length; i++) {
-			if (SourceOptions.contains(TargetOptions[i])) result[i] = true;
-			else result[i] = false;
-		}
- 		
- 		return result;
-	}
-	
-	protected String getHash(String text) throws NoSuchAlgorithmException {
-		MessageDigest digest = MessageDigest.getInstance("SHA-256");
-		byte[] encodedhash = digest.digest(text.getBytes(StandardCharsets.UTF_8));
-		
-	    StringBuffer hexString = new StringBuffer();
-	    for (int i = 0; i < encodedhash.length; i++) {
-	        String hex = Integer.toHexString(0xff & encodedhash[i]);
-	        if(hex.length() == 1) {
-	            hexString.append('0');
-	        }
-	        hexString.append(hex);
-	    }
-	    return hexString.toString();
+		this.getServletContext().getRequestDispatcher("/prescription.jsp").forward(request, response);
 	}
 
 }

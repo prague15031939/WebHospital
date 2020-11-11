@@ -14,5 +14,13 @@
 				</c:when>
 			</c:choose>
 		</div>
-		<a class="login-href" href="login"><div class="account-icon" style="background-image: url('<c:out value="${image}"/>')"></div></a>
+		
+		<c:choose>
+			<c:when test="${accountID != null}">
+				<a class="login-href" href="login"><div class="account-icon" style="background-image: url('<c:out value="${image}"/>')"></div></a>
+			</c:when>
+			<c:otherwise>
+				<a class="sign-caption" href="login">sign in</a>
+			</c:otherwise>
+		</c:choose>
 	</div>

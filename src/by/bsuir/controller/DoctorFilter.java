@@ -27,7 +27,7 @@ public class DoctorFilter implements Filter {
 		final HttpSession session = req.getSession();
 		String status = (String)session.getAttribute("status");
 		if (status == null || status == "PATIENT") {
-			req.getRequestDispatcher("/index.jsp").forward(req, res);
+			res.sendRedirect("main");
 		}
 		else {
 			chain.doFilter(request, response);

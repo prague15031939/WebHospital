@@ -223,7 +223,7 @@ public class DoctorController extends HttpServlet {
 			int patientID = Integer.parseInt(request.getParameter("id"));
 			Patient patient = daoDoctor.getPatient(patientID);
 			
-			if (patient != null) {
+			if (patient != null && (String)session.getAttribute("status") == "DOCTOR") {
 				patient.pastIllnesses += "; " + request.getParameter("final-diagnosis");
 				patient.status = PatientStatus.DISCHARGED;
 				daoDoctor.dischargePatient(patient);

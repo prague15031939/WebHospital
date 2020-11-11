@@ -37,7 +37,7 @@ public class PrescriptionDAO {
 		return connection;
 	}
 
-	public ArrayList<Prescription> GetPatientsPrescriptions(int patientID) {
+	public ArrayList<Prescription> getPatientsPrescriptions(int patientID) {
 		ArrayList<Prescription> list = new ArrayList<>(); 
 		try {
 			Connection connection = getConnection();
@@ -46,7 +46,7 @@ public class PrescriptionDAO {
 			ResultSet rs = preparedStatement.executeQuery();
 			while (rs.next()) {	
 				int prescriptionID = Integer.parseInt(rs.getString("id"));
-				list.add(GetPrescription(prescriptionID));
+				list.add(getPrescription(prescriptionID));
 			}
 		} 
 		catch (Exception e) {}
@@ -54,7 +54,7 @@ public class PrescriptionDAO {
 		return list;
 	}
 	
-	public Prescription GetPrescription(int prescriptionID) {
+	public Prescription getPrescription(int prescriptionID) {
 		try {
 			Connection connection = getConnection();
 			PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `prescription` WHERE `id` = ?");
@@ -80,7 +80,7 @@ public class PrescriptionDAO {
 		return null;
 	}
 	
-	public ArrayList<String[]> GetManipulations(DoctorSpecialization spec) {
+	public ArrayList<String[]> getManipulations(DoctorSpecialization spec) {
 		try {
 			Connection connection = getConnection();
 			PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `manipulations` WHERE `specialization` = ?");
@@ -99,7 +99,7 @@ public class PrescriptionDAO {
 		return null;
 	}
 	
-	public ArrayList<String[]> GetProcedures(DoctorSpecialization spec) {
+	public ArrayList<String[]> getProcedures(DoctorSpecialization spec) {
 		try {
 			Connection connection = getConnection();
 			PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `procedures` WHERE `specialization` = ?");

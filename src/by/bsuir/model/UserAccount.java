@@ -21,4 +21,28 @@ public class UserAccount {
 	public String email;
 	public String image;
 	public UserStatus status;
+	
+	public int getId() {
+		return id;
+	}
+	
+	public String getUsername() {
+		return username;
+	}
+	
+	public String getHash() {
+		return hash;
+	}
+	
+	public String getEmail() {
+		return email;
+	}
+	
+	public String getImage() {
+		return image;
+	}
+	
+	public UserStatus getStatus() {
+		return status;
+	}
 }

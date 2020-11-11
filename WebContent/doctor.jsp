@@ -43,7 +43,7 @@
 						<c:if test="${status eq 'DOCTOR'}">
 							<div class="actions">
 								<div class="action-button1"><a href="doctor-prescribe?id=<c:out value='${human.id}' />">prescribe</a></div>
-								<div class="action-button2"><a href="#">discharge</a></div>
+								<div class="action-button2"><a data-discharge="<c:out value="${human.name}" />;discharge?id=<c:out value="${human.id}" />">discharge</a></div>
 							</div>
 						</c:if>
 					</div>
@@ -54,6 +54,8 @@
 	</div>
 	
 	<%@ include file="WEB-INF/templates/footer.jsp" %>
+	
+	<script type="text/javascript"><%@include file="/WEB-INF/JS/discharge.js"%></script>
 	
 </body>
 </html>

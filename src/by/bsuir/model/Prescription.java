@@ -28,12 +28,36 @@ public class Prescription {
 	public String[] medicines;
 	public String[] manipulations;
 	
+	public int getPrescriptionID() {
+		return prescriptionID;
+	}
+	
+	public int getPatientID() {
+		return patientID;
+	}
+	
+	public int getDoctorID() {
+		return doctorID;
+	}
+	
+	public Date getTimestamp() {
+		return timestamp;
+	}
+
 	public String getDiagnosis() {
 		return diagnosis;
 	}
 	
-	public int getPrescriptionID () {
-		return prescriptionID;
+	public String[] getProcedures() {
+		return procedures;
+	}
+	
+	public String[] getMedicines() {
+		return medicines;
+	}
+
+	public String[] getManipulations() {
+		return manipulations;
 	}
 	
 	public String getStringTime() {
@@ -41,6 +65,6 @@ public class Prescription {
 	}
 	
 	public String getQuickDoctorInfo() {
-		return new DoctorDAO().GetDoctor(doctorID).getQuickInfo();
+		return new DoctorDAO().getDoctor(doctorID).getQuickInfo();
 	}
 }

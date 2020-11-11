@@ -125,3 +125,61 @@ body {
 .action-button1 a:hover, .action-button2 a:hover {
 	color: #e94560;
 }
+
+.discharge-wrapper {
+	left: 0px;
+	top: 0px;
+	position: fixed;
+	height: 100%;
+	width: 100%;
+	background-color: rgba(128,128,128,0.5);
+}
+
+.discharge-form {
+	width: 360px;
+  	background-color: #F8F8FF;
+  	padding: 40px;
+  	border: 1px solid #DCDCDC;
+  	border-radius: 5px;
+  	margin: 250px auto auto auto;
+}
+
+.discharge-form h3 {
+	margin-bottom: 30px;
+}
+
+.txtb {
+  border: 1px solid #DCDCDC;
+  border-radius: 5px;
+  position: relative;
+}
+
+.txtb input {
+  font-size: 15px;
+  color: black;
+  border: none;
+  width: 100%;
+  outline: none;
+  background: none;
+  padding: 0 5px;
+  height: 40px;
+}
+
+.disbtn {
+	font-size: 16px;
+  	margin-top: 40px;
+  	border-radius: 5px;
+  	display: block;
+  	width: 100%;
+  	height: 50px;
+  	border: none;
+  	background-color: #0f3057;
+  	background-size: 200%;
+  	color: white;
+  	outline: none;
+  	cursor: pointer;
+}
+
+.disbtn:hover{
+	background: linear-gradient(120deg,#008891,#00587a,#0f3057);
+}

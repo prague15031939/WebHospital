@@ -64,7 +64,7 @@ public class UserController extends HttpServlet {
 	
 	protected void showMainPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		if (session.getAttribute("hash") != null && session.getAttribute("status") != null) {
-			request.setAttribute("accountID", daoAccount.GetUserAccount((String)session.getAttribute("hash")).id);
+			request.setAttribute("accountID", daoAccount.getUserAccount((String)session.getAttribute("hash")).id);
 			request.setAttribute("status", session.getAttribute("status"));
 			request.setAttribute("image", session.getAttribute("image"));
 		}
@@ -88,7 +88,7 @@ public class UserController extends HttpServlet {
 	protected void loginUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
 			String hash = getHash(request.getParameter("username") + request.getParameter("password"));
-			UserAccount acc = daoAccount.GetUserAccount(hash);
+			UserAccount acc = daoAccount.getUserAccount(hash);
 			if (acc == null) {
 				request.setAttribute("error", "incorrect username or password");
 				this.getServletContext().getRequestDispatcher("/login.jsp").forward(request, response);
@@ -111,7 +111,7 @@ public class UserController extends HttpServlet {
 	protected void registerUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
 			String hash = getHash(request.getParameter("username") + request.getParameter("password"));
-			if (daoAccount.GetUserAccount(hash) != null)
+			if (daoAccount.getUserAccount(hash) != null)
 			{
 				request.setAttribute("error", "user is already registered");
 				this.getServletContext().getRequestDispatcher("/register.jsp").forward(request, response);
@@ -160,7 +160,7 @@ public class UserController extends HttpServlet {
 			
 			session.setAttribute("hash", hash);
 			session.setAttribute("status", status);
-			session.setAttribute("image", daoAccount.GetUserAccount(hash).image);
+			session.setAttribute("image", daoAccount.getUserAccount(hash).image);
 			response.sendRedirect("main");
 		}
 		catch (NoSuchAlgorithmException e) {} catch (ParseException e) {

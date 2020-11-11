@@ -37,7 +37,7 @@ public class DoctorDAO {
 		return connection;
 	}
 	
-	public ArrayList<Patient> GetDoctorsPatients(int doctorID) {
+	public ArrayList<Patient> getDoctorsPatients(int doctorID) {
 		ArrayList<Patient> patients = new ArrayList<>(); 
 		try {
 			Connection connection = getConnection();
@@ -45,7 +45,7 @@ public class DoctorDAO {
 			preparedStatement.setInt(1, doctorID);
 			ResultSet rs = preparedStatement.executeQuery();
 			while (rs.next()) {
-				Patient patient = GetPatient(Integer.parseInt(rs.getString("patient_id")));
+				Patient patient = getPatient(Integer.parseInt(rs.getString("patient_id")));
 				if (patient.status == PatientStatus.ON_TREATMENT)
 					patients.add(patient);
 			}
@@ -55,7 +55,7 @@ public class DoctorDAO {
 		return patients;
 	}
 	
-	public ArrayList<Patient> GetAllPatients() {
+	public ArrayList<Patient> getAllPatients() {
 		ArrayList<Patient> patients = new ArrayList<>(); 
 		try {
 			Connection connection = getConnection();
@@ -79,7 +79,7 @@ public class DoctorDAO {
 		return patients;
 	}
 	
-	public Patient GetPatient(int patientID) {
+	public Patient getPatient(int patientID) {
 		Patient pat = null;
 		try {
 			Connection connection = getConnection();
@@ -102,7 +102,7 @@ public class DoctorDAO {
 		return pat;
 	}
 	
-	public Doctor GetDoctor(int doctorID) {
+	public Doctor getDoctor(int doctorID) {
 		Doctor doc = null;
 		try {
 			Connection connection = getConnection();
@@ -153,6 +153,18 @@ public class DoctorDAO {
 			preparedStatement.setString(2, String.join(";", prescription.medicines));
 			preparedStatement.setString(3, String.join("`", prescription.manipulations));
 			preparedStatement.setInt(4, prescription.prescriptionID);
+			preparedStatement.executeUpdate();
+		} 
+		catch (Exception e) {}
+	}
+	
+	public void dischargePatient(Patient patient) {
+		try {
+			Connection connection = getConnection();
+			PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `patient` SET `past_ill` = ?, `status` = ? WHERE `id` = ?");
+			preparedStatement.setString(1, patient.pastIllnesses);
+			preparedStatement.setString(2, String.valueOf(patient.status));
+			preparedStatement.setInt(3, patient.id);
 			preparedStatement.executeUpdate();
 		} 
 		catch (Exception e) {}

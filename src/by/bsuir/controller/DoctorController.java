@@ -18,6 +18,7 @@ import by.bsuir.dao.PrescriptionDAO;
 import by.bsuir.model.Doctor;
 import by.bsuir.model.DoctorSpecialization;
 import by.bsuir.model.Patient;
+import by.bsuir.model.PatientStatus;
 import by.bsuir.model.Prescription;
 import by.bsuir.model.UserAccount;
 import by.bsuir.model.UserStatus;
@@ -59,13 +60,16 @@ public class DoctorController extends HttpServlet {
 		case "/execute":
 			this.doExecution(request, response);
 			break;
+		case "/discharge":
+			this.dischargePatient(request, response);
+			break;
 		}
 		
 	}
 	
 	protected void showDoctor(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		UserAccount accDoctor = daoAccount.GetUserAccount((String)session.getAttribute("hash"));
-		Doctor doctor = daoDoctor.GetDoctor(accDoctor.id);
+		UserAccount accDoctor = daoAccount.getUserAccount((String)session.getAttribute("hash"));
+		Doctor doctor = daoDoctor.getDoctor(accDoctor.id);
 		
 		request.setAttribute("accountID", accDoctor.id);
 		request.setAttribute("status", session.getAttribute("status"));
@@ -77,9 +81,9 @@ public class DoctorController extends HttpServlet {
 		
 		ArrayList<Patient> patients = null;
 		if (doctor.specialization == DoctorSpecialization.NURSE)
-			patients = daoDoctor.GetAllPatients();
+			patients = daoDoctor.getAllPatients();
 		else
-			patients = daoDoctor.GetDoctorsPatients(accDoctor.id);
+			patients = daoDoctor.getDoctorsPatients(accDoctor.id);
 		request.setAttribute("patientList", patients);
 		this.getServletContext().getRequestDispatcher("/doctor.jsp").forward(request, response);
 	}
@@ -87,11 +91,11 @@ public class DoctorController extends HttpServlet {
 	protected void showCreator(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		if (request.getParameter("id") != null) {
 			int patientID = Integer.parseInt(request.getParameter("id"));
-			Patient patient = daoDoctor.GetPatient(patientID);
+			Patient patient = daoDoctor.getPatient(patientID);
 			
 			if (patient != null) {
-				UserAccount accPatient = daoAccount.GetUserAccount(patientID);
-				Doctor doctor = daoDoctor.GetDoctor(daoAccount.GetUserAccount((String)session.getAttribute("hash")).id);
+				UserAccount accPatient = daoAccount.getUserAccount(patientID);
+				Doctor doctor = daoDoctor.getDoctor(daoAccount.getUserAccount((String)session.getAttribute("hash")).id);
 				
 				request.setAttribute("accountID", doctor.id);
 				request.setAttribute("status", session.getAttribute("status"));
@@ -100,9 +104,9 @@ public class DoctorController extends HttpServlet {
 				request.setAttribute("patientImage", accPatient.image);
 				request.setAttribute("patientEmail", accPatient.email);
 				
-				ArrayList<String[]> procedures = daoPrescription.GetProcedures(doctor.specialization);
+				ArrayList<String[]> procedures = daoPrescription.getProcedures(doctor.specialization);
 				request.setAttribute("procedures", procedures);
-				ArrayList<String[]> manipulations = daoPrescription.GetManipulations(doctor.specialization);
+				ArrayList<String[]> manipulations = daoPrescription.getManipulations(doctor.specialization);
 				request.setAttribute("manipulations", manipulations);
 				
 				request.setAttribute("canSubmit", daoDoctor.serviceExists(patient.id, doctor.id));
@@ -118,7 +122,7 @@ public class DoctorController extends HttpServlet {
 	protected void doPrescription(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		if (request.getParameter("id") != null) {
 			int patientID = Integer.parseInt(request.getParameter("id"));
-			Patient patient = daoDoctor.GetPatient(patientID);
+			Patient patient = daoDoctor.getPatient(patientID);
 			
 			if (patient != null) {
 				Prescription prscr = new Prescription(  
@@ -128,7 +132,7 @@ public class DoctorController extends HttpServlet {
 					request.getParameterValues("manipulation-box")
 				);
 				
-				UserAccount doctor = daoAccount.GetUserAccount((String)session.getAttribute("hash"));
+				UserAccount doctor = daoAccount.getUserAccount((String)session.getAttribute("hash"));
 				prscr.timestamp = new Date();
 				
 				int prescriptionID = -1;
@@ -149,24 +153,24 @@ public class DoctorController extends HttpServlet {
 	protected void showExecutor(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		if (request.getParameter("id") != null) {
 			int prescriptionID = Integer.parseInt(request.getParameter("id"));
-			Prescription item = daoPrescription.GetPrescription(prescriptionID);
+			Prescription item = daoPrescription.getPrescription(prescriptionID);
 			
 			if (item != null) {
-				int accountID = daoAccount.GetUserAccount((String)session.getAttribute("hash")).id;
+				int accountID = daoAccount.getUserAccount((String)session.getAttribute("hash")).id;
 				request.setAttribute("accountID", accountID);
 				request.setAttribute("status", session.getAttribute("status"));
 				request.setAttribute("image", session.getAttribute("image"));
 				
-				UserAccount accPatient = daoAccount.GetUserAccount(item.patientID);
-				Patient patient = daoDoctor.GetPatient(item.patientID);
-				UserAccount accDoctor = daoAccount.GetUserAccount(item.doctorID);
-				Doctor doctor = daoDoctor.GetDoctor(item.doctorID);
+				UserAccount accPatient = daoAccount.getUserAccount(item.patientID);
+				Patient patient = daoDoctor.getPatient(item.patientID);
+				UserAccount accDoctor = daoAccount.getUserAccount(item.doctorID);
+				Doctor doctor = daoDoctor.getDoctor(item.doctorID);
 				
 				request.setAttribute("patientInfo", patient.name + " " + patient.passportNumber + " " + patient.birthDate + " " + accPatient.email);
 				request.setAttribute("doctorInfo", doctor.getQuickInfo() + " " + accDoctor.email);
 				request.setAttribute("timestamp", item.getStringTime());
 				
-				Doctor currentDoctor = daoDoctor.GetDoctor(accountID);
+				Doctor currentDoctor = daoDoctor.getDoctor(accountID);
 				if (currentDoctor.specialization != DoctorSpecialization.NURSE) {
 					request.setAttribute("procAccessors", filterExecutionOptions(item.procedures, currentDoctor.specialization, "proc"));
 					request.setAttribute("operAccessors", filterExecutionOptions(item.manipulations, currentDoctor.specialization, "oper"));
@@ -189,7 +193,7 @@ public class DoctorController extends HttpServlet {
 	protected void doExecution(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		if (request.getParameter("id") != null) {
 			int prescriptionID = Integer.parseInt(request.getParameter("id"));
-			Prescription prescription = daoPrescription.GetPrescription(prescriptionID);
+			Prescription prescription = daoPrescription.getPrescription(prescriptionID);
 			
 			if (prescription != null) {
 				String[] medicines = request.getParameterValues("medicine-box");
@@ -197,7 +201,7 @@ public class DoctorController extends HttpServlet {
 				String[] manipulations = request.getParameterValues("manipulation-box");
 				
 				String timestamp = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date());		
-				Doctor doctor = daoDoctor.GetDoctor(daoAccount.GetUserAccount((String)session.getAttribute("hash")).id);
+				Doctor doctor = daoDoctor.getDoctor(daoAccount.getUserAccount((String)session.getAttribute("hash")).id);
 		
 				if (procedures != null) prescription.procedures = modifyPrescriptionElement(procedures, prescription.procedures, doctor, timestamp);
 				if (medicines != null) prescription.medicines = modifyPrescriptionElement(medicines, prescription.medicines, doctor, timestamp);
@@ -207,6 +211,23 @@ public class DoctorController extends HttpServlet {
 				
 				if (prescriptionID != -1)
 					response.sendRedirect("prescription?id=" + String.valueOf(prescriptionID));
+				return;
+			}
+		}
+		
+		response.sendRedirect("main");
+	}
+	
+	protected void dischargePatient(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		if (request.getParameter("id") != null) {
+			int patientID = Integer.parseInt(request.getParameter("id"));
+			Patient patient = daoDoctor.getPatient(patientID);
+			
+			if (patient != null) {
+				patient.pastIllnesses += "; " + request.getParameter("final-diagnosis");
+				patient.status = PatientStatus.DISCHARGED;
+				daoDoctor.dischargePatient(patient);
+				response.sendRedirect("doctor");
 				return;
 			}
 		}
@@ -229,8 +250,8 @@ public class DoctorController extends HttpServlet {
 	
 	protected Boolean[] filterExecutionOptions(String[] TargetOptions, DoctorSpecialization spec, String type) {
 		ArrayList<String[]> DoctorOptions = null;
-		if (type == "proc") DoctorOptions = daoPrescription.GetProcedures(spec);
-		else if (type == "oper") DoctorOptions = daoPrescription.GetManipulations(spec);
+		if (type == "proc") DoctorOptions = daoPrescription.getProcedures(spec);
+		else if (type == "oper") DoctorOptions = daoPrescription.getManipulations(spec);
 		
 		ArrayList<String> SourceOptions = new ArrayList<String>();
 		for (String[] itemList : DoctorOptions)

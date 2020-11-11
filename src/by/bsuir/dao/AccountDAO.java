@@ -87,7 +87,7 @@ public class AccountDAO {
 		catch (Exception e) {}
 	}
 	
-	protected UserAccount FillUserAccount(PreparedStatement preparedStatement) {
+	protected UserAccount fillUserAccount(PreparedStatement preparedStatement) {
 		UserAccount acc = null;
 		try {
 			ResultSet rs = preparedStatement.executeQuery();
@@ -105,23 +105,23 @@ public class AccountDAO {
 		return acc;
 	}
 	
-	public UserAccount GetUserAccount(String requestedHash) {		
+	public UserAccount getUserAccount(String requestedHash) {		
 		try {
 			Connection connection = getConnection();
 			PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `user_account` WHERE `user_hash` = ?");
 			preparedStatement.setString(1, requestedHash);
-			return FillUserAccount(preparedStatement);
+			return fillUserAccount(preparedStatement);
 		} 
 		catch (Exception e) {}
 		return null;
 	}
 	
-	public UserAccount GetUserAccount(int id) {		
+	public UserAccount getUserAccount(int id) {		
 		try {
 			Connection connection = getConnection();
 			PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `user_account` WHERE `user_id` = ?");
 			preparedStatement.setInt(1, id);
-			return FillUserAccount(preparedStatement);
+			return fillUserAccount(preparedStatement);
 		} 
 		catch (Exception e) {}
 		return null;

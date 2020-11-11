@@ -34,6 +34,7 @@
     	<url-pattern>/prescribe</url-pattern>
     	<url-pattern>/execute-prescription</url-pattern>
     	<url-pattern>/execute</url-pattern>
+    	<url-pattern>/discharge</url-pattern>
   	</servlet-mapping>
   	
   	<servlet>

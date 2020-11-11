@@ -65,19 +65,19 @@ public class Controller extends HttpServlet {
 	protected void showPatient(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		if (request.getParameter("id") != null) {
 			int patientID = Integer.parseInt(request.getParameter("id"));
-			UserAccount accPatient = daoAccount.GetUserAccount(patientID);
+			UserAccount accPatient = daoAccount.getUserAccount(patientID);
 		
 			if (accPatient != null) {
 				request.setAttribute("status", session.getAttribute("status"));
 				request.setAttribute("image", session.getAttribute("image"));
-				request.setAttribute("accountID", daoAccount.GetUserAccount((String)session.getAttribute("hash")).id);
+				request.setAttribute("accountID", daoAccount.getUserAccount((String)session.getAttribute("hash")).id);
 				request.setAttribute("patientImage", accPatient.image);
 				request.setAttribute("patientEmail", accPatient.email);
 		
-				Patient patient = daoDoctor.GetPatient(patientID);
+				Patient patient = daoDoctor.getPatient(patientID);
 				request.setAttribute("patient", patient);
 		
-				ArrayList<Prescription> prescriptions = daoPrescription.GetPatientsPrescriptions(patientID);
+				ArrayList<Prescription> prescriptions = daoPrescription.getPatientsPrescriptions(patientID);
 				request.setAttribute("prescriptionsList", prescriptions);
 		
 				this.getServletContext().getRequestDispatcher("/patient.jsp").forward(request, response);
@@ -91,18 +91,18 @@ public class Controller extends HttpServlet {
 	protected void showPrescription(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		if (request.getParameter("id") != null) {
 			int prescriptionID = Integer.parseInt(request.getParameter("id"));
-			Prescription item = daoPrescription.GetPrescription(prescriptionID);
+			Prescription item = daoPrescription.getPrescription(prescriptionID);
 			
 			if (item != null) {
-				int accountID = daoAccount.GetUserAccount((String)session.getAttribute("hash")).id;
+				int accountID = daoAccount.getUserAccount((String)session.getAttribute("hash")).id;
 				request.setAttribute("accountID", accountID);
 				request.setAttribute("status", session.getAttribute("status"));
 				request.setAttribute("image", session.getAttribute("image"));
 				
-				UserAccount accPatient = daoAccount.GetUserAccount(item.patientID);
-				Patient patient = daoDoctor.GetPatient(item.patientID);
-				UserAccount accDoctor = daoAccount.GetUserAccount(item.doctorID);
-				Doctor doctor = daoDoctor.GetDoctor(item.doctorID);
+				UserAccount accPatient = daoAccount.getUserAccount(item.patientID);
+				Patient patient = daoDoctor.getPatient(item.patientID);
+				UserAccount accDoctor = daoAccount.getUserAccount(item.doctorID);
+				Doctor doctor = daoDoctor.getDoctor(item.doctorID);
 				
 				request.setAttribute("patientInfo", patient.name + " " + patient.passportNumber + " " + patient.birthDate + " " + accPatient.email);
 				request.setAttribute("doctorInfo", doctor.getQuickInfo() + " " + accDoctor.email);

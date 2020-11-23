@@ -63,11 +63,18 @@ public class UserController extends HttpServlet {
 	}
 	
 	protected void showMainPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		if (request.getParameter("lang") != null && request.getParameter("lang").equals("ru"))
+			session.setAttribute("lang", "ru");
+		else if (request.getParameter("lang") != null && request.getParameter("lang").equals("en"))
+			session.setAttribute("lang", "en");
+		
 		if (session.getAttribute("hash") != null && session.getAttribute("status") != null) {
 			request.setAttribute("accountID", daoAccount.getUserAccount((String)session.getAttribute("hash")).id);
 			request.setAttribute("status", session.getAttribute("status"));
 			request.setAttribute("image", session.getAttribute("image"));
 		}
+		
+		request.setAttribute("lang", session.getAttribute("lang"));
 		this.getServletContext().getRequestDispatcher("/index.jsp").forward(request, response);
 	}
 		
@@ -90,7 +97,7 @@ public class UserController extends HttpServlet {
 			String hash = getHash(request.getParameter("username") + request.getParameter("password"));
 			UserAccount acc = daoAccount.getUserAccount(hash);
 			if (acc == null) {
-				request.setAttribute("error", "incorrect username or password");
+				request.setAttribute("error", 1);
 				this.getServletContext().getRequestDispatcher("/login.jsp").forward(request, response);
 				return;
 			}
@@ -113,7 +120,7 @@ public class UserController extends HttpServlet {
 			String hash = getHash(request.getParameter("username") + request.getParameter("password"));
 			if (daoAccount.getUserAccount(hash) != null)
 			{
-				request.setAttribute("error", "user is already registered");
+				request.setAttribute("error", 1);
 				this.getServletContext().getRequestDispatcher("/register.jsp").forward(request, response);
 				return;
 			}
@@ -151,7 +158,7 @@ public class UserController extends HttpServlet {
 					}
 				}
 				else {
-					request.setAttribute("error", "invalid registration key");
+					request.setAttribute("error", 2);
 					this.getServletContext().getRequestDispatcher("/register.jsp").forward(request, response);
 					return;
 				}

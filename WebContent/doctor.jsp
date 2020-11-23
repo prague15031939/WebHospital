@@ -13,6 +13,7 @@
 </head>
 <body>
 
+	<%@ include file="WEB-INF/templates/fmts.jsp" %>
 	<%@ include file="WEB-INF/templates/header.jsp" %>
 
 	<div class="wrapper">
@@ -42,8 +43,8 @@
 						</div>
 						<c:if test="${status eq 'DOCTOR'}">
 							<div class="actions">
-								<div class="action-button1"><a href="doctor-prescribe?id=<c:out value='${human.id}' />">prescribe</a></div>
-								<div class="action-button2"><a data-discharge="<c:out value="${human.name}" />;discharge?id=<c:out value="${human.id}" />">discharge</a></div>
+								<div class="action-button1"><a href="doctor-prescribe?id=<c:out value='${human.id}' />"><c:out value="${hprescribe}"/></a></div>
+								<div class="action-button2"><a data-discharge="<c:out value="${human.name}" />;discharge?id=<c:out value="${human.id}" />"><c:out value="${hdischarge}"/></a></div>
 							</div>
 						</c:if>
 					</div>

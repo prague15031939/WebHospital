@@ -14,27 +14,30 @@
     <title>WebHospital</title>
 </head>
 <body>
+
+	<%@ include file="WEB-INF/templates/fmts.jsp" %>
 	<%@ include file="WEB-INF/templates/header.jsp" %>
+	
 	<div class="wrapper">
 		<div class="main-block">
 			<form action="execute?id=<c:out value="${prescriptionID}"/>" class="prescription" method="POST">
-		        <h2>Execute prescription #<c:out value="${prescriptionID}"/></h2>
+		        <h2><c:out value="${hexecuteprescription}"/><c:out value="${prescriptionID}"/></h2>
 		        
 		        <div class="txtb-small">
-		        	<div class="patient-info">patient: <c:out value="${patientInfo}"/></div>
-		         	<div class="doctor-info">doctor: <c:out value="${doctorInfo}"/></div>
+		        	<div class="patient-info"><c:out value="${hpatient}"/> <c:out value="${patientInfo}"/></div>
+		         	<div class="doctor-info"><c:out value="${hdoctor}"/> <c:out value="${doctorInfo}"/></div>
 		         	<div class="timestamp"><c:out value="${timestamp}"/></div>
 		        </div>
 		
 		        <div class="txtb-large">
-		        	<div class="label">diagnosis</div>
+		        	<div class="label"><c:out value="${hdiagnosis}"/></div>
 		         	<div class="diagnosis"><c:out value="${diagnosis}"/></div>
 				
 		        </div>
 		        
 		        <c:if test="${fn:length(procedures) > 0 and procedures[0] ne ''}">
 			        <div class="proc-region">
-			        	<div class="label-c">therapeutic procedures</div>				 
+			        	<div class="label-c"><c:out value="${hprocedures}"/></div>				 
 						<c:forEach var="proc" items="${procedures}" varStatus="varstatus">
 							<div class="procedure-item">
 							
@@ -67,7 +70,7 @@
 		        
 		        <c:if test="${fn:length(medicines) > 0 and medicines[0] ne ''}">
 			        <div class="txtb-large">
-			        	<div class="label-c">medicines</div>
+			        	<div class="label-c"><c:out value="${hmedicines}"/></div>
 			        	<c:forEach var="medicine" items="${medicines}">
 			          		<div class="medicine-item">
 			          		
@@ -91,7 +94,7 @@
 		        
 		        <c:if test="${fn:length(manipulations) > 0 and manipulations[0] ne ''}">
 			        <div class="oper-region">
-			        	<div class="label-c">manipulations</div>				 
+			        	<div class="label-c"><c:out value="${hmanipulations}"/></div>				 
 						<c:forEach var="oper" items="${manipulations}" varStatus="varstatus">
 					  		<div class="operation-item">
 					  			
@@ -122,7 +125,7 @@
 			        </div>
 		        </c:if>
 		        
-		        <input type="submit" class="executebtn" value="execute">
+		        <input type="submit" class="executebtn" value="<c:out value='${hexecute}'/>">
 		        
 		   	</form>
 	   	</div>

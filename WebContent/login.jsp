@@ -12,24 +12,26 @@
 
 <body>
 		
+	<%@ include file="WEB-INF/templates/fmts.jsp" %>
+	
 	<form action="sign-in" id="login-form" class="login-form" method="POST">
-      <h1>Login</h1>
+      <h1><c:out value="${hlogin}"/></h1>
 
-	  <a class="label">Username</a>
+	  <a class="label"><c:out value="${husername}"/></a>
       <div class="txtb">
         <input type="text" id="username" name="username" onkeydown="this.parentElement.style.borderColor = '#DCDCDC';">
       </div>
 
-      <a class="label">Password</a>
+      <a class="label"><c:out value="${hpassword}"/></a>
       <div class="txtb">
         <input type="password" id="password" name="password" onkeydown="this.parentElement.style.borderColor = '#DCDCDC';">
       </div>
 
-      <button type="button" class="logbtn" onclick="checkLoginFields();">Sign in</button>
+      <button type="button" class="logbtn" onclick="checkLoginFields();"><c:out value="${hsignin}"/></button>
       
-      <div class="bottom-text">Do not have an account? <a href="register" class="redirect-href">Sign up</a></div>
-      <c:if test="${not empty error}">
-      	<div class="bottom-error-text"><c:out value="${error}"></c:out></div>
+      <div class="bottom-text"><c:out value="${hwithoutaccount}"/> <a href="register" class="redirect-href"><c:out value="${hsignup}"/></a></div>
+      <c:if test="${error eq 1}">
+      	<div class="bottom-error-text"><c:out value="${hloginerror}"></c:out></div>
       </c:if>
     </form>
 	

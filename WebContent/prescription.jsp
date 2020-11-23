@@ -14,28 +14,29 @@
     <title>WebHospital</title>
 </head>
 <body>
-
+	
+	<%@ include file="WEB-INF/templates/fmts.jsp" %>
 	<%@ include file="WEB-INF/templates/header.jsp" %>
 
 	<div class="wrapper">
 		<div class="main-block">
 			<div class="prescription">
-		        <h2>Prescription #<c:out value="${prescriptionID}"/></h2>
+		        <h2><c:out value="${hprescription}"/><c:out value="${prescriptionID}"/></h2>
 		        
 		        <div class="txtb-small">
-		        	<div class="patient-info">patient: <c:out value="${patientInfo}"/></div>
-		         	<div class="doctor-info">doctor: <c:out value="${doctorInfo}"/></div>
+		        	<div class="patient-info"><c:out value="${hpatient}"/> <c:out value="${patientInfo}"/></div>
+		         	<div class="doctor-info"><c:out value="${hdoctor}"/> <c:out value="${doctorInfo}"/></div>
 		         	<div class="timestamp"><c:out value="${timestamp}"/></div>
 		        </div>
 		
 		        <div class="txtb-large">
-		        	<a class="label">diagnosis</a>
+		        	<a class="label"><c:out value="${hdiagnosis}"/></a>
 		         	<div class="diagnosis"><c:out value="${diagnosis}"/></div>
 		        </div>
 				
 				<c:if test="${fn:length(procedures) > 0 and procedures[0] ne ''}">
 			        <div class="proc-region">
-			        	<a class="label">therapeutic procedures</a>				 
+			        	<a class="label"><c:out value="${hprocedures}"/></a>				 
 						<c:forEach var="proc" items="${procedures}">
 							<div class="procedure-item">
 							
@@ -59,7 +60,7 @@
 		        
 		        <c:if test="${fn:length(medicines) > 0 and medicines[0] ne ''}">
 			        <div class="txtb-large">
-			        	<a class="label">medicines</a>
+			        	<a class="label"><c:out value="${hmedicines}"/></a>
 						<c:forEach var="medicine" items="${medicines}">
 							<div class="medicine-item">
 							
@@ -82,7 +83,7 @@
 		        
 		        <c:if test="${fn:length(manipulations) > 0 and manipulations[0] ne ''}">
 			        <div class="oper-region">
-			        	<a class="label">manipulations</a>				 
+			        	<a class="label"><c:out value="${hmanipulations}"/></a>				 
 						<c:forEach var="oper" items="${manipulations}">
 							<div class="operation-item">
 							

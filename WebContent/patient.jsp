@@ -12,7 +12,8 @@
     <title>WebHospital</title>
 </head>
 <body>
-
+	
+	<%@ include file="WEB-INF/templates/fmts.jsp" %>
 	<%@ include file="WEB-INF/templates/header.jsp" %>
 
 	<div class="wrapper">
@@ -27,7 +28,7 @@
 				<div class="patient-info-item"><c:out value="${patient.birthDate}" /></div>
 				<div class="patient-info-item"><c:out value="${patient.livingPlace}" /></div>
 				<div class="patient-info-item"><c:out value="${patientEmail}" /></div>
-				<div class="patient-info-pastillnesses">past patient's illnesses: <p class="illnesses-text"><c:out value="${patient.pastIllnesses}" /><p></div>
+				<div class="patient-info-pastillnesses"><c:out value="${hpastill}"/><p class="illnesses-text"><c:out value="${patient.pastIllnesses}" /><p></div>
 			</div>
 		</div>
 	
@@ -43,9 +44,9 @@
 							<div class="prescription-timestamp-item"><c:out value="${pres.getStringTime()}" /></div>
 						</div>
 						<div class="actions">
-							<div class="action-button1"><a href="prescription?id=<c:out value='${pres.prescriptionID}' />">view</a></div>
+							<div class="action-button1"><a href="prescription?id=<c:out value='${pres.prescriptionID}' />"><c:out value="${hview}"/></a></div>
 							<c:if test="${status eq 'DOCTOR' or status eq 'NURSE'}">
-								<div class="action-button2"><a href="execute-prescription?id=<c:out value='${pres.prescriptionID}' />">execute</a></div>
+								<div class="action-button2"><a href="execute-prescription?id=<c:out value='${pres.prescriptionID}' />"><c:out value="${hexecute}"/></a></div>
 							</c:if>
 						</div>
 					</div>

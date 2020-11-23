@@ -13,6 +13,7 @@
 </head>
 <body>
 
+	<%@ include file="WEB-INF/templates/fmts.jsp" %>
 	<%@ include file="WEB-INF/templates/header.jsp" %>
 
 	<div class="wrapper">
@@ -26,21 +27,21 @@
 				<div class="patient-info-item"><c:out value="${patient.birthDate}" /></div>
 				<div class="patient-info-item"><c:out value="${patient.livingPlace}" /></div>
 				<div class="patient-info-item"><c:out value="${patientEmail}" /></div>
-				<div class="patient-info-pastillnesses">past patient's illnesses: <p class="illnesses-text"><c:out value="${patient.pastIllnesses}" /><p></div>
+				<div class="patient-info-pastillnesses"><c:out value="${hpastill}" /><p class="illnesses-text"><c:out value="${patient.pastIllnesses}" /><p></div>
 			</div>
 		</div>
 		
 		<div class="main-block">
 			<div class="prescription">
 		      <form action="prescribe?id=<c:out value='${patient.id}'/>" id="prescribe-form" class="prescribe-form" method="POST">
-		        <h2>Create a prescription</h2>
+		        <h2><c:out value="${hcreateprescription}" /></h2>
 		
 		        <div class="txtb-large">
-		          <textarea name="diagnosis" id="diagnosis" rows="3" cols="73" placeholder="diagnosis" onkeydown="this.parentElement.style.borderColor = '#DCDCDC';"></textarea>
+		          <textarea name="diagnosis" id="diagnosis" rows="3" cols="73" placeholder="<c:out value='${hdiagnosis}' />" onkeydown="this.parentElement.style.borderColor = '#DCDCDC';"></textarea>
 		        </div>
 				
 		        <div class="proc-region">
-					<a class="label">therapeutic procedures</a>
+					<a class="label"><c:out value="${hprocedures}" /></a>
 					 
 					<table id="procedures">
 						<c:forEach var="pr" items="${procedures}">
@@ -60,11 +61,11 @@
 		        </div>
 		        
 		        <div class="txtb-large">
-		          <textarea name="medicines" rows="7" cols="73" id="medicines" placeholder="medicines" onkeydown="this.parentElement.style.borderColor = '#DCDCDC';"></textarea>
+		          <textarea name="medicines" rows="7" cols="73" id="medicines" placeholder="<c:out value='${hmedicines}' />" onkeydown="this.parentElement.style.borderColor = '#DCDCDC';"></textarea>
 		        </div>
 		        
 		        <div class="oper-region">
-					<a class="label">manipulations</a>
+					<a class="label"><c:out value="${hmanipulations}" /></a>
 					 
 					<table id="operations">
 						<c:forEach var="mn" items="${manipulations}">
@@ -85,10 +86,10 @@
 		        
 		        <c:choose>
 		        	<c:when test="${canSubmit eq true}">
-			        	<button type="button" class="createbtn" id="createbtn" onclick="submitPrescribeForm();">submit</button>
+			        	<button type="button" class="createbtn" id="createbtn" onclick="submitPrescribeForm();"><c:out value="${hsubmit}"/></button>
 		        	</c:when>
 		        	<c:otherwise>
-		        		<p id="cannot-submit-text">cannot prescribe to this patient</p>
+		        		<p id="cannot-submit-text"><c:out value="${hcannot}"/></p>
 		        	</c:otherwise>
 		        </c:choose>
 		        

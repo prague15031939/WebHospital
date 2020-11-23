@@ -13,23 +13,38 @@
 </head>
 <body>
 
+	<%@ include file="WEB-INF/templates/fmts.jsp" %>	
 	<%@ include file="WEB-INF/templates/header.jsp" %>
 
 	<div class="wrapper">
 		<div class="secondary-block">
 			<div class="inner-secondary">
-				<p>Welcome<br/>to<br/>WebHospital</p>
+				<p><c:out value="${htitle1}"/><br/><c:out value="${htitle2}"/><br/>WebHospital</p>
 			</div>
 		</div>
 		
 		<div class="main-block">
 			<div class="inner-main">
-					
+			
+				<label class="switch">
+					<c:choose>
+						<c:when test="${lang eq 'ru'}">
+							<input type="checkbox" name="langChoise" id="langChoise" value="rus" onclick="switchLang();" checked>
+						</c:when>
+						<c:otherwise>
+							<input type="checkbox" name="langChoise" id="langChoise" value="rus" onclick="switchLang();">
+						</c:otherwise>
+					</c:choose>
+  					<span class="slider round"></span>
+				</label>
+				
 			</div>
 	    </div>
 	</div>
 	
 	<%@ include file="WEB-INF/templates/footer.jsp" %>
+	
+	<script type="text/javascript"><%@include file="/WEB-INF/JS/switch-lang.js"%></script>
 
 </body>
 </html>

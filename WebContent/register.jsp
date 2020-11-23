@@ -13,70 +13,72 @@
 
 <body>
 		
+	<%@ include file="WEB-INF/templates/fmts.jsp" %>
+	
 	<form action="sign-up" id="register-form" class="register-form" method="POST" autocomplete="off">
-      <h1>Register</h1>
+      <h1><c:out value="${hregister}"/></h1>
 		
 		<div class="wrapper">
 		
 			<div class="main-fields">
-			  <a class="label">Username</a>
+			  <a class="label"><c:out value="${husername}"/></a>
 		      <div class="txtb">
 		        <input type="text" id="username" name="username" onkeydown="this.parentElement.style.borderColor = '#DCDCDC';">
 		      </div>
 		      
-		      <a class="label">E-mail</a>
+		      <a class="label"><c:out value="${hemail}"/></a>
 		      <div class="txtb">
 		        <input type="text" id="email" name="email" onkeydown="this.parentElement.style.borderColor = '#DCDCDC';">
 		      </div>
 		
-		      <a class="label">Password</a>
+		      <a class="label"><c:out value="${hpassword}"/></a>
 		      <div class="txtb">
 		        <input type="password" id="password" name="password" onkeydown="this.parentElement.style.borderColor = '#DCDCDC';">
 		      </div>
 		      
-		      <a class="label">Status</a>
+		      <a class="label"><c:out value="${hstatus}"/></a>
 		      <select class="custom-select" id="status-select" name="status" onchange="changeFunc();">
-		    	<option value="PATIENT">patient</option>
-		    	<option selected value="DOCTOR">doctor</option>
-		    	<option value="NURSE">nurse</option>
+		    	<option value="PATIENT"><c:out value="${hpat}"/></option>
+		    	<option selected value="DOCTOR"><c:out value="${hdoc}"/></option>
+		    	<option value="NURSE"><c:out value="${hnurse}"/></option>
 		      </select>
 	      	</div>
 	      	
 	      	<div class="secondary-fields">
-	    		<a class="label">Own name</a>
+	    		<a class="label"><c:out value="${hownname}"/></a>
 		     	<div class="txtb">
 		       	 	<input type="text" id="own-name" name="own-name" onkeydown="this.parentElement.style.borderColor = '#DCDCDC';">
 		      	</div>
 		      	
-		      	<a class="label">Birth date</a>
+		      	<a class="label"><c:out value="${hbirthdate}"/></a>
 		      	<div class="txtb">
 		        	<input type="date" id="birthdate" name="birthdate" onclick="this.parentElement.style.borderColor = '#DCDCDC';">
 		      	</div>  
 		      	
 		      	<div id="patient-fields" style="display: none;">
-		      		<a class="label">Passport number</a>
+		      		<a class="label"><c:out value="${hpassport}"/></a>
 		      		<div class="txtb">
 		        		<input type="text" id="passport" name="passport" onkeydown="this.parentElement.style.borderColor = '#DCDCDC';">
 		      		</div> 
 		      		
-		      	 	<a class="label">Living place</a>
+		      	 	<a class="label"><c:out value="${hliving}"/></a>
 		      		<div class="txtb">
 		        		<input type="text" id="living-place" name="living-place" onkeydown="this.parentElement.style.borderColor = '#DCDCDC';">
 		      		</div> 
 		      	</div>
 		      	
 		      	<div id="doctor-fields">
-		      		<a class="label">Specialization</a>
+		      		<a class="label"><c:out value="${hspec}"/></a>
 	        		<select class="custom-select" id="specialization" name="specialization" onchange="changeSpec();">
-	    				<option selected value="THERAPIST">therapist</option>
-	    				<option value="OPHTHALMOLOGIST">ophthalmologist</option>
-	    				<option value="OTOLARYNGOLOGIST">otolaryngologist</option>
-	    				<option value="CARDIOLOGIST">cardiologist</option>
-	    				<option value="SURGEON">surgeon</option>
-	    				<option value="NURSE">nurse</option>
+	    				<option selected value="THERAPIST"><c:out value="${hth}"/></option>
+	    				<option value="OPHTHALMOLOGIST"><c:out value="${hoph}"/></option>
+	    				<option value="OTOLARYNGOLOGIST"><c:out value="${hoto}"/></option>
+	    				<option value="CARDIOLOGIST"><c:out value="${hcar}"/></option>
+	    				<option value="SURGEON"><c:out value="${hsurg}"/></option>
+	    				<option value="NURSE"><c:out value="${hnurse}"/></option>
 	      			</select>
 	      			
-	      	   		<a class="label">Registration key</a>
+	      	   		<a class="label"><c:out value="${hregkey}"/></a>
 		      		<div class="txtb">
 		        		<input type="password" id="regkey" name="regkey" onkeydown="this.parentElement.style.borderColor = '#DCDCDC';">
 		      		</div> 
@@ -86,18 +88,23 @@
       	</div>
       	
       	<div id="patient-extra" style="display: none;">
-      		<a class="label">Past illnesses</a>
+      		<a class="label"><c:out value="${hpilln}"/></a>
 			<div class="txtb">
 				<input type="text" id="past-illnesses" name="past-illnesses" onkeydown="this.parentElement.style.borderColor = '#DCDCDC';">
 			</div> 
 		</div>
 
-      	<button type="button" class="logbtn" onclick="checkFields();">Sign up</button>
+      	<button type="button" class="logbtn" onclick="checkFields();"><c:out value="${hsignup}"/></button>
       
-      	<div class="bottom-text">Have an account? <a href="login" class="redirect-href">Sign in</a></div>
-      	<c:if test="${not empty error}">
-      		<div class="bottom-error-text"><c:out value="${error}"></c:out></div>
-      	</c:if>
+      	<div class="bottom-text"><c:out value="${hwithaccount}"/> <a href="login" class="redirect-href"><c:out value="${hsignin}"/></a></div>
+      	<c:choose>
+      		<c:when test="${error eq 1}">
+      			<div class="bottom-error-text"><c:out value="${hregerror1}"></c:out></div>
+      		</c:when>
+      		<c:when test="${error eq 2}">
+      			<div class="bottom-error-text"><c:out value="${hregerror2}"></c:out></div>
+      		</c:when>
+      	</c:choose>
     </form>
 	
 	<%@ include file="WEB-INF/templates/footer.jsp" %>

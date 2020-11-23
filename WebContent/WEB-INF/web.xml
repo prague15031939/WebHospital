@@ -74,6 +74,19 @@
         <servlet-name>DoctorServlet</servlet-name>
     </filter-mapping>
     
+    <filter>
+        <filter-name>EncodingFilter</filter-name>
+        <filter-class>by.bsuir.controller.EncodingFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>EncodingFilter</filter-name>
+        <url-pattern>/</url-pattern>
+        <servlet-name>DoctorServlet</servlet-name>
+        <servlet-name>CommonServlet</servlet-name>
+        <servlet-name>UserServlet</servlet-name>
+    </filter-mapping>
+    
     <servlet>
     	<servlet-name>ImageServlet</servlet-name>
       	<servlet-class>by.bsuir.controller.ImageController</servlet-class>

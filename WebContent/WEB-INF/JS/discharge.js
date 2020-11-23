@@ -18,7 +18,7 @@
 	
 	function createForm(info) {
 		var txt = document.createElement("h3");
-		txt.appendChild(document.createTextNode("discharge " + info.split(';')[0]));
+		txt.appendChild(document.createTextNode("<c:out value='${hdischarge}'/>" + " " + info.split(';')[0]));
 		
 		var f = document.createElement("form");
 		f.setAttribute('method',"post");
@@ -32,7 +32,7 @@
 		i.setAttribute('class', "txtb");
 		i.setAttribute('name',"final-diagnosis");
 		i.setAttribute('id',"final-diagnosis");
-		i.setAttribute('placeholder', "final diagnosis..");
+		i.setAttribute('placeholder', "<c:out value='${hfinaldiagnosis}'/>");
 		i.setAttribute("onkeydown", "this.parentElement.style.borderColor = '#DCDCDC';");
 		
 		var txtb = document.createElement("div");
@@ -43,7 +43,7 @@
 		b.setAttribute('type',"button");
 		b.setAttribute('class', "disbtn");
 		b.setAttribute('onclick', "submitDischargeForm();");
-		b.appendChild(document.createTextNode("discharge"));
+		b.appendChild(document.createTextNode("<c:out value='${hdischarge}'/>"));
 
 		f.appendChild(txt);
 		f.appendChild(txtb);

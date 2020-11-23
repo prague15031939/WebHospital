@@ -125,11 +125,22 @@ public class DoctorController extends HttpServlet {
 			Patient patient = daoDoctor.getPatient(patientID);
 			
 			if (patient != null) {
+				String[] medicines;
+				if (request.getParameter("medicines") == null) 
+					medicines = new String[0];
+				else
+					medicines = request.getParameter("medicines").split(";");
+				
+				String[] procedures = request.getParameterValues("proc-box");
+				if (procedures == null) procedures = new String[0];
+				String[] operations = request.getParameterValues("manipulation-box");
+				if (operations == null) operations = new String[0];
+				
 				Prescription prscr = new Prescription(  
 					request.getParameter("diagnosis"), 
-					request.getParameter("medicines").split(";"), 
-					request.getParameterValues("proc-box"),
-					request.getParameterValues("manipulation-box")
+					medicines,
+					procedures,
+					operations
 				);
 				
 				UserAccount doctor = daoAccount.getUserAccount((String)session.getAttribute("hash"));

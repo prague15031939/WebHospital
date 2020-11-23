@@ -32,11 +32,11 @@
 		
 		<div class="main-block">
 			<div class="prescription">
-		      <form action="prescribe?id=<c:out value='${patient.id}'/>" class="prescribe-form" method="POST">
+		      <form action="prescribe?id=<c:out value='${patient.id}'/>" id="prescribe-form" class="prescribe-form" method="POST">
 		        <h2>Create a prescription</h2>
 		
 		        <div class="txtb-large">
-		          <textarea name="diagnosis" rows="3" cols="73" placeholder="diagnosis"></textarea>
+		          <textarea name="diagnosis" id="diagnosis" rows="3" cols="73" placeholder="diagnosis" onkeydown="this.parentElement.style.borderColor = '#DCDCDC';"></textarea>
 		        </div>
 				
 		        <div class="proc-region">
@@ -60,7 +60,7 @@
 		        </div>
 		        
 		        <div class="txtb-large">
-		          <textarea name="medicines" rows="7" cols="73" placeholder="medicines"></textarea>
+		          <textarea name="medicines" rows="7" cols="73" id="medicines" placeholder="medicines" onkeydown="this.parentElement.style.borderColor = '#DCDCDC';"></textarea>
 		        </div>
 		        
 		        <div class="oper-region">
@@ -85,7 +85,7 @@
 		        
 		        <c:choose>
 		        	<c:when test="${canSubmit eq true}">
-		        		<input type="submit" class="createbtn" value="submit">
+			        	<button type="button" class="createbtn" id="createbtn" onclick="submitPrescribeForm();">submit</button>
 		        	</c:when>
 		        	<c:otherwise>
 		        		<p id="cannot-submit-text">cannot prescribe to this patient</p>
@@ -98,6 +98,8 @@
 	</div>
 	
 	<%@ include file="WEB-INF/templates/footer.jsp" %>
+	
+	<script type="text/javascript"><%@include file="/WEB-INF/JS/prescription.js"%></script>
 	
 </body>
 </html>

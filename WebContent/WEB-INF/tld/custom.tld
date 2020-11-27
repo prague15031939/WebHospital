@@ -1,0 +1,21 @@
+<taglib>
+   <tlib-version>1.0</tlib-version>
+   <jsp-version>2.0</jsp-version>
+   <short-name>custom switch</short-name>
+   
+   <tag>
+      <name>switch</name>
+      <tag-class>by.bsuir.tag.SwitchTag</tag-class>
+      <info>trying to create custom user tag</info>
+      <body-content>scriptless</body-content>
+      
+      <attribute>
+         <name>checkboxName</name>
+      </attribute>
+      
+      <attribute>
+         <name>jsOnclick</name>
+      </attribute>
+      
+   </tag>
+</taglib>

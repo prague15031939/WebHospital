@@ -44,9 +44,15 @@ body {
   	font-size: 72px;
 }
 
+.switch-item {
+	display: flex;
+  	flex-direction: row;
+  	justify-content: start;	
+}
 
 .switch {
   position: relative;
+  margin-left: 10px;
   display: inline-block;
   width: 60px;
   height: 34px;

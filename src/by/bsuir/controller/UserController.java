@@ -68,7 +68,7 @@ public class UserController extends HttpServlet {
 		else if (request.getParameter("lang") != null && request.getParameter("lang").equals("en"))
 			session.setAttribute("lang", "en");
 		
-		if (session.getAttribute("hash") != null && session.getAttribute("status") != null) {
+		if (session.getAttribute("hash") != null) {
 			request.setAttribute("accountID", daoAccount.getUserAccount((String)session.getAttribute("hash")).id);
 			request.setAttribute("status", session.getAttribute("status"));
 			request.setAttribute("image", session.getAttribute("image"));

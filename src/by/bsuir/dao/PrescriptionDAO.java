@@ -18,26 +18,8 @@ import by.bsuir.model.Prescription;
 import by.bsuir.model.UserAccount;
 import by.bsuir.model.UserStatus;
 
-public class PrescriptionDAO {
-	private String jdbcURL = "jdbc:mysql://localhost:3306/hospital?serverTimezone=Europe/Minsk&useSSL=false";
-	private String jdbcUsername = "root";
-	private String jdbcPassword = "MySqlPassword09052020";
-	
+public class PrescriptionDAO {	
 	private ConnectionPool pool = ConnectionPool.getInstance();
-	
-	protected Connection getConnection() {
-		Connection connection = null;
-		try {
-			Class.forName("com.mysql.jdbc.Driver");
-			connection = DriverManager.getConnection(jdbcURL, jdbcUsername, jdbcPassword); 
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-		
-		return connection;
-	}
 
 	public ArrayList<Prescription> getPatientsPrescriptions(int patientID) {
 		Connection connection = null;

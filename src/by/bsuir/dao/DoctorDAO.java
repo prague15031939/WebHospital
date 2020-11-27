@@ -23,6 +23,8 @@ public class DoctorDAO {
 	private String jdbcUsername = "root";
 	private String jdbcPassword = "MySqlPassword09052020";
 	
+	private ConnectionPool pool = ConnectionPool.getInstance();
+	
 	protected Connection getConnection() {
 		Connection connection = null;
 		try {
@@ -38,9 +40,10 @@ public class DoctorDAO {
 	}
 	
 	public ArrayList<Patient> getDoctorsPatients(int doctorID) {
-		ArrayList<Patient> patients = new ArrayList<>(); 
+		ArrayList<Patient> patients = new ArrayList<>();
+		Connection connection = null;
 		try {
-			Connection connection = getConnection();
+			connection = pool.getConnection();
 			PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `service` WHERE `doctor_id` = ?");
 			preparedStatement.setInt(1, doctorID);
 			ResultSet rs = preparedStatement.executeQuery();
@@ -51,14 +54,22 @@ public class DoctorDAO {
 			}
 		} 
 		catch (Exception e) {}
+		finally {
+	        try {
+	            connection.close();
+	        } catch (SQLException sqlee) {
+	            sqlee.printStackTrace();
+	        }
+	    }
 		
 		return patients;
 	}
 	
 	public ArrayList<Patient> getAllPatients() {
 		ArrayList<Patient> patients = new ArrayList<>(); 
+		Connection connection = null;
 		try {
-			Connection connection = getConnection();
+			connection = pool.getConnection();
 			PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `patient`");
 			ResultSet rs = preparedStatement.executeQuery();
 			while (rs.next()) {
@@ -75,14 +86,22 @@ public class DoctorDAO {
 			}
 		} 
 		catch (Exception e) {}
+		finally {
+	        try {
+	            connection.close();
+	        } catch (SQLException sqlee) {
+	            sqlee.printStackTrace();
+	        }
+	    }
 		
 		return patients;
 	}
 	
 	public Patient getPatient(int patientID) {
 		Patient pat = null;
+		Connection connection = null;
 		try {
-			Connection connection = getConnection();
+			connection = pool.getConnection();
 			PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `patient` WHERE `id` = ?");
 			preparedStatement.setInt(1, patientID);
 			ResultSet rs = preparedStatement.executeQuery();
@@ -98,14 +117,22 @@ public class DoctorDAO {
 			}
 		} 
 		catch (Exception e) {}
+		finally {
+	        try {
+	            connection.close();
+	        } catch (SQLException sqlee) {
+	            sqlee.printStackTrace();
+	        }
+	    }
 		
 		return pat;
 	}
 	
 	public Doctor getDoctor(int doctorID) {
 		Doctor doc = null;
+		Connection connection = null;
 		try {
-			Connection connection = getConnection();
+			connection = pool.getConnection();
 			PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `doctor` WHERE `id` = ?");
 			preparedStatement.setInt(1, doctorID);
 			ResultSet rs = preparedStatement.executeQuery();
@@ -118,13 +145,21 @@ public class DoctorDAO {
 			}
 		} 
 		catch (Exception e) {}
+		finally {
+	        try {
+	            connection.close();
+	        } catch (SQLException sqlee) {
+	            sqlee.printStackTrace();
+	        }
+	    }
 		
 		return doc;
 	}
 	
 	public int doPrescription(Prescription prescription, int doctorID, int patientID) {
+		Connection connection = null;
 		try {
-			Connection connection = getConnection();
+			connection = pool.getConnection();
 			PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO prescription (patient_id, doctor_id, timestamp, diagnosis, procedures, medicines, manipulations) VALUES (?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 			preparedStatement.setInt(1, patientID);
 			preparedStatement.setInt(2, doctorID);
@@ -141,13 +176,21 @@ public class DoctorDAO {
 			} 
 		} 
 		catch (Exception e) {}
+		finally {
+	        try {
+	            connection.close();
+	        } catch (SQLException sqlee) {
+	            sqlee.printStackTrace();
+	        }
+	    }
 		
 		return -1;
 	}
 	
 	public void doExecution(Prescription prescription) {
+		Connection connection = null;
 		try {
-			Connection connection = getConnection();
+			connection = pool.getConnection();
 			PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `prescription` SET `procedures` = ?, `medicines` = ?, `manipulations` = ? WHERE `id` = ?");
 			preparedStatement.setString(1, String.join("`", prescription.procedures));
 			preparedStatement.setString(2, String.join(";", prescription.medicines));
@@ -156,11 +199,19 @@ public class DoctorDAO {
 			preparedStatement.executeUpdate();
 		} 
 		catch (Exception e) {}
+		finally {
+	        try {
+	            connection.close();
+	        } catch (SQLException sqlee) {
+	            sqlee.printStackTrace();
+	        }
+	    }
 	}
 	
 	public void dischargePatient(Patient patient) {
+		Connection connection = null;
 		try {
-			Connection connection = getConnection();
+			connection = pool.getConnection();
 			PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `patient` SET `past_ill` = ?, `status` = ? WHERE `id` = ?");
 			preparedStatement.setString(1, patient.pastIllnesses);
 			preparedStatement.setString(2, String.valueOf(patient.status));
@@ -168,11 +219,19 @@ public class DoctorDAO {
 			preparedStatement.executeUpdate();
 		} 
 		catch (Exception e) {}
+		finally {
+	        try {
+	            connection.close();
+	        } catch (SQLException sqlee) {
+	            sqlee.printStackTrace();
+	        }
+	    }
 	}
 	
 	public Boolean serviceExists(int patientID, int doctorID) {
+		Connection connection = null;
 		try {
-			Connection connection = getConnection();
+			connection = pool.getConnection();
 			PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `service` WHERE `patient_id` = ? AND `doctor_id` = ?");
 			preparedStatement.setInt(1, patientID);
 			preparedStatement.setInt(2, doctorID);
@@ -181,6 +240,13 @@ public class DoctorDAO {
 				return true;
 		} 
 		catch (Exception e) {}
+		finally {
+	        try {
+	            connection.close();
+	        } catch (SQLException sqlee) {
+	            sqlee.printStackTrace();
+	        }
+	    }
 		
 		return false;
 	}

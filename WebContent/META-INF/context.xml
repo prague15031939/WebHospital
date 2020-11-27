@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>
+    <Resource name="jdbc/WebHospital" 
+             auth="Container"
+             type="javax.sql.DataSource"
+             username="root"
+             password="MySqlPassword09052020"
+             driverClassName="com.mysql.jdbc.Driver"
+             url="jdbc:mysql://localhost:3306/hospital?useUnicode=true&amp;serverTimezone=UTC&amp;characterEncoding=UTF-8&amp;useSSL=false"
+             validationQuery="select 1"
+             maxActive="10"
+             maxIdle="4"/>
+</Context>

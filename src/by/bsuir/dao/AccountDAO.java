@@ -23,6 +23,8 @@ public class AccountDAO {
 	private String jdbcUsername = "root";
 	private String jdbcPassword = "MySqlPassword09052020";
 	
+	private ConnectionPool pool = ConnectionPool.getInstance();
+	
 	protected Connection getConnection() {
 		Connection connection = null;
 		try {
@@ -38,8 +40,9 @@ public class AccountDAO {
 	}
 	
 	public int registerUser(UserAccount acc) {
+		Connection connection = null;
 		try {
-			Connection connection = getConnection();
+			connection = pool.getConnection();
 			PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO `user_account` (`user_name`, `user_hash`, `email`, `image`, `status`) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 			preparedStatement.setString(1, acc.username);
 			preparedStatement.setString(2, acc.hash);
@@ -54,13 +57,21 @@ public class AccountDAO {
 			} 
 		} 
 		catch (Exception e) {}
+		finally {
+	        try {
+	            connection.close();
+	        } catch (SQLException sqlee) {
+	            sqlee.printStackTrace();
+	        }
+	    }
 		
 		return -1;
 	}
 	
 	public void registerPatient(Patient patient) {
+		Connection connection = null;
 		try {
-			Connection connection = getConnection();
+			connection = pool.getConnection();
 			PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO `patient` (`id`, `name`, `passport`, `birth_date`, `living_place`, `past_ill`, `status`) VALUES (?, ?, ?, ?, ?, ?, ?)");
 			preparedStatement.setInt(1, patient.id);
 			preparedStatement.setString(2, patient.name);
@@ -72,11 +83,19 @@ public class AccountDAO {
 			preparedStatement.executeUpdate();
 		} 
 		catch (Exception e) {}
+		finally {
+	        try {
+	            connection.close();
+	        } catch (SQLException sqlee) {
+	            sqlee.printStackTrace();
+	        }
+	    }
 	}
 	
 	public void registerDoctor(Doctor doctor) {
+		Connection connection = null;
 		try {
-			Connection connection = getConnection();
+			connection = pool.getConnection();
 			PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO `doctor` (`id`, `name`, `birth_date`, `specialization`) VALUES (?, ?, ?, ?)");
 			preparedStatement.setInt(1, doctor.id);
 			preparedStatement.setString(2, doctor.name);
@@ -85,6 +104,13 @@ public class AccountDAO {
 			preparedStatement.executeUpdate();
 		} 
 		catch (Exception e) {}
+		finally {
+	        try {
+	            connection.close();
+	        } catch (SQLException sqlee) {
+	            sqlee.printStackTrace();
+	        }
+	    }
 	}
 	
 	protected UserAccount fillUserAccount(PreparedStatement preparedStatement) {
@@ -105,25 +131,43 @@ public class AccountDAO {
 		return acc;
 	}
 	
-	public UserAccount getUserAccount(String requestedHash) {		
+	public UserAccount getUserAccount(String requestedHash) {
+		Connection connection = null;
 		try {
-			Connection connection = getConnection();
+			connection = pool.getConnection();
 			PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `user_account` WHERE `user_hash` = ?");
 			preparedStatement.setString(1, requestedHash);
 			return fillUserAccount(preparedStatement);
 		} 
 		catch (Exception e) {}
+		finally {
+	        try {
+	            connection.close();
+	        } catch (SQLException sqlee) {
+	            sqlee.printStackTrace();
+	        }
+	    }
+
 		return null;
 	}
 	
 	public UserAccount getUserAccount(int id) {		
+		Connection connection = null;
 		try {
-			Connection connection = getConnection();
+			connection = pool.getConnection();
 			PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `user_account` WHERE `user_id` = ?");
 			preparedStatement.setInt(1, id);
 			return fillUserAccount(preparedStatement);
 		} 
 		catch (Exception e) {}
+		finally {
+	        try {
+	            connection.close();
+	        } catch (SQLException sqlee) {
+	            sqlee.printStackTrace();
+	        }
+	    }
+		
 		return null;
 	}
 	

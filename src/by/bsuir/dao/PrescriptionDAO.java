@@ -23,6 +23,8 @@ public class PrescriptionDAO {
 	private String jdbcUsername = "root";
 	private String jdbcPassword = "MySqlPassword09052020";
 	
+	private ConnectionPool pool = ConnectionPool.getInstance();
+	
 	protected Connection getConnection() {
 		Connection connection = null;
 		try {
@@ -38,9 +40,10 @@ public class PrescriptionDAO {
 	}
 
 	public ArrayList<Prescription> getPatientsPrescriptions(int patientID) {
+		Connection connection = null;
 		ArrayList<Prescription> list = new ArrayList<>(); 
 		try {
-			Connection connection = getConnection();
+			connection = pool.getConnection();
 			PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `prescription` WHERE `patient_id` = ?");
 			preparedStatement.setInt(1, patientID);
 			ResultSet rs = preparedStatement.executeQuery();
@@ -50,13 +53,21 @@ public class PrescriptionDAO {
 			}
 		} 
 		catch (Exception e) {}
+		finally {
+	        try {
+	            connection.close();
+	        } catch (SQLException sqlee) {
+	            sqlee.printStackTrace();
+	        }
+	    }
 		
 		return list;
 	}
 	
 	public Prescription getPrescription(int prescriptionID) {
+		Connection connection = null;
 		try {
-			Connection connection = getConnection();
+			connection = pool.getConnection();
 			PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `prescription` WHERE `id` = ?");
 			preparedStatement.setInt(1, prescriptionID);
 			ResultSet rs = preparedStatement.executeQuery();
@@ -76,13 +87,21 @@ public class PrescriptionDAO {
 			}
 		} 
 		catch (Exception e) {}
+		finally {
+	        try {
+	            connection.close();
+	        } catch (SQLException sqlee) {
+	            sqlee.printStackTrace();
+	        }
+	    }
 		
 		return null;
 	}
 	
 	public ArrayList<String[]> getManipulations(DoctorSpecialization spec) {
+		Connection connection = null;
 		try {
-			Connection connection = getConnection();
+			connection = pool.getConnection();
 			PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `manipulations` WHERE `specialization` = ?");
 			preparedStatement.setString(1, String.valueOf(spec));
 			ResultSet rs = preparedStatement.executeQuery();
@@ -95,13 +114,21 @@ public class PrescriptionDAO {
 			}
 		} 
 		catch (Exception e) {}
+		finally {
+	        try {
+	            connection.close();
+	        } catch (SQLException sqlee) {
+	            sqlee.printStackTrace();
+	        }
+	    }
 		
 		return null;
 	}
 	
 	public ArrayList<String[]> getProcedures(DoctorSpecialization spec) {
+		Connection connection = null;
 		try {
-			Connection connection = getConnection();
+			connection = pool.getConnection();
 			PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `procedures` WHERE `specialization` = ?");
 			preparedStatement.setString(1, String.valueOf(spec));
 			ResultSet rs = preparedStatement.executeQuery();
@@ -114,6 +141,13 @@ public class PrescriptionDAO {
 			}
 		} 
 		catch (Exception e) {}
+		finally {
+	        try {
+	            connection.close();
+	        } catch (SQLException sqlee) {
+	            sqlee.printStackTrace();
+	        }
+	    }
 		
 		return null;
 	}

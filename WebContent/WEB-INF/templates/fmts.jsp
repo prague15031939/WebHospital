@@ -1,6 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 
-<fmt:setLocale value='<%=request.getSession().getAttribute("lang")%>'/>
+<fmt:setLocale value='<%=request.getSession().getAttribute("lang") == null ? "en" : request.getSession().getAttribute("lang")%>'/>
 <fmt:setBundle basename="resources.lang" var="loc"/>
 
 <fmt:message bundle="${loc}" key="lang.common.submit" var="hsubmit"/>

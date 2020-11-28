@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+
 import by.bsuir.model.Doctor;
 import by.bsuir.model.DoctorSpecialization;
 import by.bsuir.model.Patient;
@@ -19,7 +22,13 @@ import by.bsuir.model.UserAccount;
 import by.bsuir.model.UserStatus;
 
 public class AccountDAO {
+	private final Logger logger;
 	private ConnectionPool pool = ConnectionPool.getInstance();
+	
+	public AccountDAO() {
+        logger = Logger.getLogger(this.getClass());
+        PropertyConfigurator.configure(this.getClass().getClassLoader().getResource("resources/log4j.properties"));
+	}
 	
 	public int registerUser(UserAccount acc) {
 		Connection connection = null;
@@ -38,7 +47,9 @@ public class AccountDAO {
 			    return rs.getInt(1);
 			} 
 		} 
-		catch (Exception e) {}
+		catch (Exception e) {
+			logger.error(e.getMessage());
+		}
 		finally {
 	        try {
 	            connection.close();
@@ -64,7 +75,9 @@ public class AccountDAO {
 			preparedStatement.setString(7, patient.status.toString());
 			preparedStatement.executeUpdate();
 		} 
-		catch (Exception e) {}
+		catch (Exception e) {
+			logger.error(e.getMessage());
+		}
 		finally {
 	        try {
 	            connection.close();
@@ -85,7 +98,9 @@ public class AccountDAO {
 			preparedStatement.setString(4, doctor.specialization.toString());
 			preparedStatement.executeUpdate();
 		} 
-		catch (Exception e) {}
+		catch (Exception e) {
+			logger.error(e.getMessage());
+		}
 		finally {
 	        try {
 	            connection.close();
@@ -109,7 +124,9 @@ public class AccountDAO {
 				acc.status = UserStatus.valueOf(rs.getString("status"));
 			} 
 		}
-		catch (Exception e) {}
+		catch (Exception e) {
+			logger.error(e.getMessage());
+		}
 		return acc;
 	}
 	
@@ -121,7 +138,9 @@ public class AccountDAO {
 			preparedStatement.setString(1, requestedHash);
 			return fillUserAccount(preparedStatement);
 		} 
-		catch (Exception e) {}
+		catch (Exception e) {
+			logger.error(e.getMessage());
+		}
 		finally {
 	        try {
 	            connection.close();
@@ -141,7 +160,9 @@ public class AccountDAO {
 			preparedStatement.setInt(1, id);
 			return fillUserAccount(preparedStatement);
 		} 
-		catch (Exception e) {}
+		catch (Exception e) {
+			logger.error(e.getMessage());
+		}
 		finally {
 	        try {
 	            connection.close();

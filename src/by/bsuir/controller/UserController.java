@@ -1,6 +1,8 @@
 package by.bsuir.controller;
 
+import java.io.File;
 import java.io.IOException;
+
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -23,6 +25,9 @@ import by.bsuir.model.PatientStatus;
 import by.bsuir.model.UserAccount;
 import by.bsuir.model.UserStatus;
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+
 @WebServlet("/usr")
 public class UserController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -30,9 +35,11 @@ public class UserController extends HttpServlet {
 	private	String STUFF_REGISTRATION_KEY = "sho";
 	private HttpSession session;
 	private AccountDAO daoAccount = new AccountDAO();
+	private final Logger logger;
        
     public UserController() {
-        super();
+        logger = Logger.getLogger(this.getClass());
+        PropertyConfigurator.configure(this.getClass().getClassLoader().getResource("resources/log4j.properties"));
     }
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -42,6 +49,7 @@ public class UserController extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		session = request.getSession(true);
 		String action = request.getServletPath();
+		logger.info(action);
 		
 		switch (action) {
 		case "/main":
@@ -75,6 +83,7 @@ public class UserController extends HttpServlet {
 		}
 		
 		request.setAttribute("lang", session.getAttribute("lang"));
+		logger.info("lang: " + session.getAttribute("lang"));
 		this.getServletContext().getRequestDispatcher("/index.jsp").forward(request, response);
 	}
 		
@@ -98,6 +107,7 @@ public class UserController extends HttpServlet {
 			UserAccount acc = daoAccount.getUserAccount(hash);
 			if (acc == null) {
 				request.setAttribute("error", 1);
+				logger.warn("sign-in: invalid login or password");
 				this.getServletContext().getRequestDispatcher("/login.jsp").forward(request, response);
 				return;
 			}
@@ -106,6 +116,7 @@ public class UserController extends HttpServlet {
 			session.setAttribute("hash", hash);
 			session.setAttribute("status", status.toString());
 			session.setAttribute("image", acc.image);
+			logger.info("sign-in: session filled");
 			
 			if (status == UserStatus.DOCTOR || status == UserStatus.NURSE)
 				response.sendRedirect("doctor");
@@ -121,6 +132,7 @@ public class UserController extends HttpServlet {
 			if (daoAccount.getUserAccount(hash) != null)
 			{
 				request.setAttribute("error", 1);
+				logger.warn("sign-up: user is already registered");
 				this.getServletContext().getRequestDispatcher("/register.jsp").forward(request, response);
 				return;
 			}
@@ -143,6 +155,7 @@ public class UserController extends HttpServlet {
 					patient.pastIllnesses = pastIllnesses;
 					patient.status = PatientStatus.ON_TREATMENT;
 					daoAccount.registerPatient(patient);
+					logger.info("sign-up: patient registered");
 				}
 				break;	
 				
@@ -155,10 +168,12 @@ public class UserController extends HttpServlet {
 					if (doctorID != -1) {
 						Doctor doctor = new Doctor(doctorID, ownName, birthDate, DoctorSpecialization.valueOf(specialization));
 						daoAccount.registerDoctor(doctor);
+						logger.info("sign-up: doctor registered");
 					}
 				}
 				else {
 					request.setAttribute("error", 2);
+					logger.warn("sign-up: incorrect registration key");
 					this.getServletContext().getRequestDispatcher("/register.jsp").forward(request, response);
 					return;
 				}
@@ -168,6 +183,7 @@ public class UserController extends HttpServlet {
 			session.setAttribute("hash", hash);
 			session.setAttribute("status", status);
 			session.setAttribute("image", daoAccount.getUserAccount(hash).image);
+			logger.info("sign-up: session filled");
 			response.sendRedirect("main");
 		}
 		catch (NoSuchAlgorithmException e) {} catch (ParseException e) {

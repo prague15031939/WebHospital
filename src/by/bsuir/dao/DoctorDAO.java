@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+
 import by.bsuir.model.Doctor;
 import by.bsuir.model.DoctorSpecialization;
 import by.bsuir.model.Patient;
@@ -19,7 +22,13 @@ import by.bsuir.model.UserAccount;
 import by.bsuir.model.UserStatus;
 
 public class DoctorDAO {	
+	private final Logger logger;
 	private ConnectionPool pool = ConnectionPool.getInstance();
+	
+	public DoctorDAO() {
+        logger = Logger.getLogger(this.getClass());
+        PropertyConfigurator.configure(this.getClass().getClassLoader().getResource("resources/log4j.properties"));
+	}
 	
 	public ArrayList<Patient> getDoctorsPatients(int doctorID) {
 		ArrayList<Patient> patients = new ArrayList<>();
@@ -35,7 +44,9 @@ public class DoctorDAO {
 					patients.add(patient);
 			}
 		} 
-		catch (Exception e) {}
+		catch (Exception e) {
+			logger.error(e.getMessage());
+		}
 		finally {
 	        try {
 	            connection.close();
@@ -67,7 +78,9 @@ public class DoctorDAO {
 					patients.add(human);
 			}
 		} 
-		catch (Exception e) {}
+		catch (Exception e) {
+			logger.error(e.getMessage());
+		}
 		finally {
 	        try {
 	            connection.close();
@@ -98,7 +111,9 @@ public class DoctorDAO {
 				pat.status = PatientStatus.valueOf(rs.getString("status"));
 			}
 		} 
-		catch (Exception e) {}
+		catch (Exception e) {
+			logger.error(e.getMessage());
+		}
 		finally {
 	        try {
 	            connection.close();
@@ -126,7 +141,9 @@ public class DoctorDAO {
 				doc = new Doctor(id, name, birthDate, DoctorSpecialization.valueOf(spec));
 			}
 		} 
-		catch (Exception e) {}
+		catch (Exception e) {
+			logger.error(e.getMessage());
+		}
 		finally {
 	        try {
 	            connection.close();
@@ -157,7 +174,9 @@ public class DoctorDAO {
 			    return rs.getInt(1);
 			} 
 		} 
-		catch (Exception e) {}
+		catch (Exception e) {
+			logger.error(e.getMessage());
+		}
 		finally {
 	        try {
 	            connection.close();
@@ -180,7 +199,9 @@ public class DoctorDAO {
 			preparedStatement.setInt(4, prescription.prescriptionID);
 			preparedStatement.executeUpdate();
 		} 
-		catch (Exception e) {}
+		catch (Exception e) {
+			logger.error(e.getMessage());
+		}
 		finally {
 	        try {
 	            connection.close();
@@ -200,7 +221,9 @@ public class DoctorDAO {
 			preparedStatement.setInt(3, patient.id);
 			preparedStatement.executeUpdate();
 		} 
-		catch (Exception e) {}
+		catch (Exception e) {
+			logger.error(e.getMessage());
+		}
 		finally {
 	        try {
 	            connection.close();
@@ -221,7 +244,9 @@ public class DoctorDAO {
 			while (rs.next()) 
 				return true;
 		} 
-		catch (Exception e) {}
+		catch (Exception e) {
+			logger.error(e.getMessage());
+		}
 		finally {
 	        try {
 	            connection.close();

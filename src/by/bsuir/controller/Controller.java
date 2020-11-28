@@ -19,6 +19,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+
 import by.bsuir.dao.AccountDAO;
 import by.bsuir.dao.DoctorDAO;
 import by.bsuir.dao.PrescriptionDAO;
@@ -38,14 +41,17 @@ public class Controller extends HttpServlet {
 	private AccountDAO daoAccount = new AccountDAO();
 	private DoctorDAO daoDoctor = new DoctorDAO();
 	private PrescriptionDAO daoPrescription = new PrescriptionDAO();
+	private final Logger logger;
 
     public Controller() {
-    	super();
+        logger = Logger.getLogger(this.getClass());
+        PropertyConfigurator.configure(this.getClass().getClassLoader().getResource("resources/log4j.properties"));
     }
     
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		session = request.getSession(true); 
 		String action = request.getServletPath();
+		logger.info(action);
 		
 		switch (action) {
 		case "/patient":
@@ -85,6 +91,7 @@ public class Controller extends HttpServlet {
 			}
 		}
 		
+		logger.warn("patient: invalid patient id");
 		response.sendRedirect("main");
 	}
 	
@@ -119,6 +126,7 @@ public class Controller extends HttpServlet {
 			}
 		}
 		
+		logger.warn("prescription: invalid prescription id");
 		response.sendRedirect("main");
 	}
 

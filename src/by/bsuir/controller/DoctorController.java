@@ -12,6 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+
 import by.bsuir.dao.AccountDAO;
 import by.bsuir.dao.DoctorDAO;
 import by.bsuir.dao.PrescriptionDAO;
@@ -31,9 +34,11 @@ public class DoctorController extends HttpServlet {
 	private DoctorDAO daoDoctor = new DoctorDAO();
 	private AccountDAO daoAccount = new AccountDAO();
 	private PrescriptionDAO daoPrescription = new PrescriptionDAO();
+	private final Logger logger;
 	
     public DoctorController() {
-        super();
+        logger = Logger.getLogger(this.getClass());
+        PropertyConfigurator.configure(this.getClass().getClassLoader().getResource("resources/log4j.properties"));
     }
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -43,6 +48,7 @@ public class DoctorController extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		session = request.getSession(true);
 		String action = request.getServletPath();
+		logger.info(action);
 		
 		switch (action) {
 		case "/doctor":
@@ -116,6 +122,7 @@ public class DoctorController extends HttpServlet {
 			}
 		}
 		
+		logger.warn("doctor-prescribe: invalid patient id");
 		response.sendRedirect("main");
 	}
 	
@@ -152,12 +159,15 @@ public class DoctorController extends HttpServlet {
 				
 				if (prescriptionID != -1)
 					response.sendRedirect("prescription?id=" + String.valueOf(prescriptionID));
-				else
+				else {
+					logger.warn("prescription: invalid prescription id");
 					response.sendRedirect("main");
+				}
 				return;
 			}
 		}
 		
+		logger.warn("prescribe: invalid patient id");
 		response.sendRedirect("main");
 	}
 	
@@ -198,6 +208,7 @@ public class DoctorController extends HttpServlet {
 			}
 		}
 		
+		logger.warn("execute-prescription: invalid prescription id");
 		response.sendRedirect("main");
 	}
 	
@@ -226,6 +237,7 @@ public class DoctorController extends HttpServlet {
 			}
 		}
 		
+		logger.warn("execute: invalid prescription id");
 		response.sendRedirect("main");
 	}
 	
@@ -243,6 +255,7 @@ public class DoctorController extends HttpServlet {
 			}
 		}
 		
+		logger.warn("discharge: invalid patient id");
 		response.sendRedirect("main");
 	}
 	

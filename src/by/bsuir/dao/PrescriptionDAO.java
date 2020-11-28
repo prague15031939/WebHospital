@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+
 import by.bsuir.model.Doctor;
 import by.bsuir.model.DoctorSpecialization;
 import by.bsuir.model.Patient;
@@ -19,7 +22,13 @@ import by.bsuir.model.UserAccount;
 import by.bsuir.model.UserStatus;
 
 public class PrescriptionDAO {	
+	private final Logger logger;
 	private ConnectionPool pool = ConnectionPool.getInstance();
+	
+	public PrescriptionDAO() {
+        logger = Logger.getLogger(this.getClass());
+        PropertyConfigurator.configure(this.getClass().getClassLoader().getResource("resources/log4j.properties"));
+	}
 
 	public ArrayList<Prescription> getPatientsPrescriptions(int patientID) {
 		Connection connection = null;
@@ -34,7 +43,9 @@ public class PrescriptionDAO {
 				list.add(getPrescription(prescriptionID));
 			}
 		} 
-		catch (Exception e) {}
+		catch (Exception e) {
+			logger.error(e.getMessage());
+		}
 		finally {
 	        try {
 	            connection.close();
@@ -68,7 +79,9 @@ public class PrescriptionDAO {
 				return item;
 			}
 		} 
-		catch (Exception e) {}
+		catch (Exception e) {
+			logger.error(e.getMessage());
+		}
 		finally {
 	        try {
 	            connection.close();
@@ -95,7 +108,9 @@ public class PrescriptionDAO {
 				return manipulations;
 			}
 		} 
-		catch (Exception e) {}
+		catch (Exception e) {
+			logger.error(e.getMessage());
+		}
 		finally {
 	        try {
 	            connection.close();
@@ -122,7 +137,9 @@ public class PrescriptionDAO {
 				return procedures;
 			}
 		} 
-		catch (Exception e) {}
+		catch (Exception e) {
+			logger.error(e.getMessage());
+		}
 		finally {
 	        try {
 	            connection.close();
